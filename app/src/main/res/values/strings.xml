@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">Reminder One</string>
+
+    <array name="recurrence_type_array">
+        <item>Year(s)</item>
+        <item>Months(s)</item>
+        <item>Day(s)</item>
+        <item>Hour(s)</item>
+        <item>Minute(s)</item>
+    </array>
+
+    <!--  Strings for the Main Activity  -->
+
+    <string name="am_fab_add_reminder">Add Reminder</string>
+    <string name="am_button_delete_all">Delete All</string>
+    <string name="am_tv_no_reminders">No Reminders found\nClick + to add a reminder</string>
+    <string name="am_tb_title">REMINDERS</string>
+
+    <!--  Strings for the Add Reminder Activity  -->
+    <string name="ara_default_display_date">Today-Tue, 29 Jun</string>
+    <string name="ara_select_date_description">Select Date</string>
+    <string name="ara_hint_reminder_name">Reminder Name</string>
+    <string name="ara_switch_repeat_reminder">Repeat Reminder</string>
+    <string name="ara_label_every">Every</string>
+    <string name="ara_repetition_delay">Repetition delay</string>
+    <string name="ara_date_default">End Date: Tue, 29 Jun</string>
+    <string name="ara_time_default">End Time: 11:52 AM</string>
+    <string name="ara_button_reset">RESET</string>
+    <string name="ara_button_save">SAVE</string>
+
+    <string name="ara_reminder_end_time">End Time - %1$d:%2$d</string>
+    <string name="ara_reminder_end_date">End Date - %1$d/%2$d/%3$d</string>
+
+
+    <!--  Strings for Reminder List Recycler View Layout  -->
+    <string name="rir_default_reminder_name">Test Name</string>
+    <string name="rir_default_reminder_time">04:30</string>
+    <string name="rir_default_recurrence_details">Every 2 Hours</string>
+    <string name="rir_default_reminder_date">Fri, 2 July</string>
+    <string name="rir_default_occurrence_delay">Triggers in 4 months and 12 days</string>
+    <string name="rir_default_end_date_time">12:30, 01–07–2021</string>
+
+
+    <!--  Strings for Reminder List Recycler Adapter  -->
+    <string name="ria_reminder_time">%1$d:%2$d</string>
+    <string name="ria_recurrence_details">Every %1$d %2$s</string>
+    <string name="ria_reminder_date">%1$d-%2$d-%3$d</string>
+    <string name="ria_occurrence_delay">Triggers in %1$d %2$s and %3$d %4$s</string>
+    <string name="ria_end_date_time">%1$d:%2$d, %3$d-%4$d-%5$d</string>
+
+</resources>
