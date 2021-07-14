@@ -118,9 +118,8 @@ public class ReminderItemAdapter extends RecyclerView.Adapter<ReminderItemAdapte
                     .setPositiveButton(R.string.ria_delete_dialog_confirm, (dialog, which) -> {
                         Log.i("Reminders: ", "Delete confirmed!");
                         deleteReminderConsumer.accept(reminder);
-                    }).setNegativeButton(R.string.ria_delete_dialog_cancel, (dialog, which) -> {
-                        Log.i("Reminders: ", "Delete cancelled!");
-                    }).create();
+                    }).setNegativeButton(R.string.ria_delete_dialog_cancel, (dialog, which) -> Log.i("Reminders: ", "Delete cancelled!"))
+                    .create();
             alertDialog.show();
         }
     }

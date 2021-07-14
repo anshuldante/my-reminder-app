@@ -1,9 +1,11 @@
 package com.ava.myreminderapp;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton addReminderButton = findViewById(R.id.am_fab_add_reminder);
         addReminderButton.setOnClickListener(view -> startActivity(new Intent(this, AddReminderActivity.class)));
 
-        emptyReminderList = findViewById(R.id.am_tv_no_reminders);
+        Button deleteAllButton = findViewById(R.id.am_bt_delete_all);
+        deleteAllButton.setOnClickListener(this::deleteAllRemindersDialog);
 
+        emptyReminderList = findViewById(R.id.am_tv_no_reminders);
 
         reminderItemAdapter = new ReminderItemAdapter(reminderList, this, this::deleteReminder, this::updateReminderStatus);
         reminderRecyclerView = findViewById(R.id.am_rv_reminders);
@@ -106,6 +110,30 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Reminders: ", "Updated reminder: " + reminder.getName() + "'s status to: " + isActive);
             } catch (Exception e) {
                 Log.e("Reminders: ", "Exception while Updating reminder: " + reminder.getName() + "'s status to: " + isActive);
+            }
+        });
+    }
+
+    private void deleteAllRemindersDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog alertDialog = builder.setTitle(R.string.am_delete_all_dialog_title)
+                .setMessage(R.string.am_delete_all_dialog_message)
+                .setPositiveButton(R.string.am_delete_dialog_confirm, (dialog, which) -> {
+                    Log.i("Reminders: ", "Delete All Confirmed!");
+                    deleteAllReminders();
+                }).setNegativeButton(R.string.ria_delete_dialog_cancel,
+                        (dialog, which) -> Log.i("Reminders: ", "Delete All Cancelled!"))
+                .create();
+        alertDialog.show();
+    }
+
+    private void deleteAllReminders() {
+        reminderDaoExecutor.submit(() -> {
+            try {
+                reminderDao.deleteAll();
+                Log.i("Reminders: ", "Deleted All reminders!");
+            } catch (Exception e) {
+                Log.e("Reminders: ", "Exception while deleting all reminders", e);
             }
         });
     }

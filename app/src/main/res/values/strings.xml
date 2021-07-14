@@ -15,6 +15,9 @@
     <string name="am_button_delete_all">Delete All</string>
     <string name="am_tv_no_reminders">No Reminders found\nClick + to add a reminder</string>
     <string name="am_tb_title">REMINDERS</string>
+    <string name="am_delete_all_dialog_title">Delete All Reminders</string>
+    <string name="am_delete_all_dialog_message">Are you sure you want to \"DELETE ALL REMINDERS\"?</string>
+    <string name="am_delete_dialog_confirm">Delete All</string>
 
     <!--  Strings for the Add Reminder Activity  -->
     <string name="ara_default_display_date">Today-Tue, 29 Jun</string>
@@ -48,7 +51,7 @@
     <string name="ria_reminder_date">%1$d-%2$d-%3$d</string>
     <string name="ria_occurrence_delay">Triggers in %1$d %2$s and %3$d %4$s</string>
     <string name="ria_end_date_time">%1$d:%2$d, %3$d-%4$d-%5$d</string>
-    <string name="ria_delete_dialog_title">"Delete Reminder"</string>
+    <string name="ria_delete_dialog_title">Delete Reminder</string>
     <string name="ria_delete_dialog_message">Are you sure you want to delete \"%1$s\"?</string>
     <string name="ria_delete_dialog_confirm">Delete</string>
     <string name="ria_delete_dialog_cancel">Cancel</string>

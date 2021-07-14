@@ -44,7 +44,6 @@ import static java.util.Calendar.YEAR;
 @AndroidEntryPoint
 public class AddReminderActivity extends AppCompatActivity {
 
-
     // UI Components
     private ConstraintLayout recurrenceDetailsCl;
     private ReminderModel referenceReminderModel;
