@@ -1,9 +1,13 @@
 package com.ava.myreminderapp.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,17 +19,21 @@ import com.ava.myreminderapp.model.ReminderModel;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class ReminderItemAdapter extends RecyclerView.Adapter<ReminderItemAdapter.ReminderItemViewHolder> {
     private final List<ReminderModel> dataset;
     private final Context context;
-    private final Consumer<Integer> deleteReminderConsumer;
+    private final Consumer<ReminderModel> deleteReminderConsumer;
+    private final BiConsumer<ReminderModel, Boolean> updateReminderStatus;
 
-    public ReminderItemAdapter(List<ReminderModel> dataset, Context context, Consumer<Integer> deleteReminderConsumer) {
+    public ReminderItemAdapter(List<ReminderModel> dataset, Context context,
+                               Consumer<ReminderModel> deleteReminderConsumer, BiConsumer<ReminderModel, Boolean> updateReminderStatus) {
         this.dataset = dataset;
         this.context = context;
         this.deleteReminderConsumer = deleteReminderConsumer;
+        this.updateReminderStatus = updateReminderStatus;
     }
 
     @NonNull
@@ -90,14 +98,30 @@ public class ReminderItemAdapter extends RecyclerView.Adapter<ReminderItemAdapte
             reminderDate = itemView.findViewById(R.id.rir_tv_reminder_date);
             nextOccurrenceDelay = itemView.findViewById(R.id.rir_tv_next_occurrence_delay);
             endDateTime = itemView.findViewById(R.id.rir_tv_end_date_time);
-
+            ImageView deleteReminderIv = itemView.findViewById(R.id.rir_iv_delete_reminder);
             activeSwitch = itemView.findViewById(R.id.rir_sw_active);
 
-            activeSwitch.setOnCheckedChangeListener((view, checked) -> {
-                if (checked) {
-                    deleteReminderConsumer.accept(reminder.getId());
-                }
-            });
+            activeSwitch.setOnCheckedChangeListener(this::toggleReminderStatus);
+            deleteReminderIv.setOnClickListener(this::deleteReminder);
+        }
+
+        private void toggleReminderStatus(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked != reminder.isActive()) {
+                updateReminderStatus.accept(reminder, isChecked);
+            }
+        }
+
+        private void deleteReminder(View view) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog alertDialog = builder.setTitle(R.string.ria_delete_dialog_title)
+                    .setMessage(context.getString(R.string.ria_delete_dialog_message, reminder.getName()))
+                    .setPositiveButton(R.string.ria_delete_dialog_confirm, (dialog, which) -> {
+                        Log.i("Reminders: ", "Delete confirmed!");
+                        deleteReminderConsumer.accept(reminder);
+                    }).setNegativeButton(R.string.ria_delete_dialog_cancel, (dialog, which) -> {
+                        Log.i("Reminders: ", "Delete cancelled!");
+                    }).create();
+            alertDialog.show();
         }
     }
 }

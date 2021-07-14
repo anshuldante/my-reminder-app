@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Reminder One</string>
+    <string name="app_name">My Reminder App</string>
 
     <array name="recurrence_type_array">
         <item>Year(s)</item>
@@ -48,5 +48,9 @@
     <string name="ria_reminder_date">%1$d-%2$d-%3$d</string>
     <string name="ria_occurrence_delay">Triggers in %1$d %2$s and %3$d %4$s</string>
     <string name="ria_end_date_time">%1$d:%2$d, %3$d-%4$d-%5$d</string>
+    <string name="ria_delete_dialog_title">"Delete Reminder"</string>
+    <string name="ria_delete_dialog_message">Are you sure you want to delete \"%1$s\"?</string>
+    <string name="ria_delete_dialog_confirm">Delete</string>
+    <string name="ria_delete_dialog_cancel">Cancel</string>
 
 </resources>

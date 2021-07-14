@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         emptyReminderList = findViewById(R.id.am_tv_no_reminders);
 
 
-        reminderItemAdapter = new ReminderItemAdapter(reminderList, this, this::deleteReminder);
+        reminderItemAdapter = new ReminderItemAdapter(reminderList, this, this::deleteReminder, this::updateReminderStatus);
         reminderRecyclerView = findViewById(R.id.am_rv_reminders);
         reminderRecyclerView.setAdapter(reminderItemAdapter);
 
@@ -88,13 +88,24 @@ public class MainActivity extends AppCompatActivity {
         compositeDisposable.dispose();
     }
 
-    private void deleteReminder(int id) {
+    private void deleteReminder(ReminderModel reminder) {
         reminderDaoExecutor.submit(() -> {
             try {
-//                reminderDao.deleteById(id);
-                Log.i("Reminders: ", "Deleted reminder: " + id);
+                reminderDao.deleteById(reminder.getId());
+                Log.i("Reminders: ", "Deleted reminder: " + reminder.getName());
             } catch (Exception e) {
-                Log.e("Reminders: ", "Exception while deleting reminder: " + id, e);
+                Log.e("Reminders: ", "Exception while deleting reminder: " + reminder.getName(), e);
+            }
+        });
+    }
+
+    private void updateReminderStatus(ReminderModel reminder, boolean isActive) {
+        reminderDaoExecutor.submit(() -> {
+            try {
+                reminderDao.updateStatus(reminder.getId(), isActive);
+                Log.i("Reminders: ", "Updated reminder: " + reminder.getName() + "'s status to: " + isActive);
+            } catch (Exception e) {
+                Log.e("Reminders: ", "Exception while Updating reminder: " + reminder.getName() + "'s status to: " + isActive);
             }
         });
     }
