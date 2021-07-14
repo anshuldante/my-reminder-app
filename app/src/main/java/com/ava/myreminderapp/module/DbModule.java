@@ -11,10 +11,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import dagger.Reusable;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
@@ -26,23 +26,27 @@ import io.reactivex.schedulers.Schedulers;
 public class DbModule {
 
     @Provides
+    @Singleton
     @Named("reminderDaoExecutor")
     public ExecutorService getReminderDaoExecutorService() {
         return Executors.newFixedThreadPool(5);
     }
 
     @Provides
+    @Singleton
     @Named("reminderDaoScheduler")
     public Scheduler getReminderDaoScheduler(@Named("reminderDaoExecutor") ExecutorService executorService) {
         return Schedulers.from(executorService);
     }
 
     @Provides
+    @Singleton
     public RemindersDb getRemindersDb(@ApplicationContext Context context) {
         return Room.databaseBuilder(context, RemindersDb.class, "Reminders-DB").build();
     }
 
     @Provides
+    @Singleton
     public ReminderDao getReminderDao(RemindersDb remindersDb) {
         return remindersDb.reminderDao();
     }

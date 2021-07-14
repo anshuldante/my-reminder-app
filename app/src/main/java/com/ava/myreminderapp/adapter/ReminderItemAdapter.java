@@ -10,20 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.ava.myreminderapp.R;
 import com.ava.myreminderapp.model.ReminderModel;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ReminderItemAdapter extends RecyclerView.Adapter<ReminderItemAdapter.ReminderItemViewHolder> {
     private final List<ReminderModel> dataset;
     private final Context context;
+    private final Consumer<Integer> deleteReminderConsumer;
 
-    public ReminderItemAdapter(List<ReminderModel> dataset, Context context) {
+    public ReminderItemAdapter(List<ReminderModel> dataset, Context context, Consumer<Integer> deleteReminderConsumer) {
         this.dataset = dataset;
         this.context = context;
+        this.deleteReminderConsumer = deleteReminderConsumer;
     }
 
     @NonNull
@@ -36,6 +38,9 @@ public class ReminderItemAdapter extends RecyclerView.Adapter<ReminderItemAdapte
     @Override
     public void onBindViewHolder(@NonNull ReminderItemViewHolder holder, int position) {
         ReminderModel reminder = dataset.get(position);
+
+        holder.reminder = reminder;
+
         holder.reminderName.setText(reminder.getName());
 
         Calendar startDateTime = reminder.getStartDateTime();
@@ -65,7 +70,7 @@ public class ReminderItemAdapter extends RecyclerView.Adapter<ReminderItemAdapte
         return dataset.size();
     }
 
-    public static class ReminderItemViewHolder extends RecyclerView.ViewHolder {
+    public class ReminderItemViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView reminderName;
         private final TextView reminderTime;
@@ -75,15 +80,24 @@ public class ReminderItemAdapter extends RecyclerView.Adapter<ReminderItemAdapte
         private final TextView nextOccurrenceDelay;
         private final TextView endDateTime;
 
+        private ReminderModel reminder;
+
         public ReminderItemViewHolder(View itemView) {
             super(itemView);
             reminderName = itemView.findViewById(R.id.rir_tv_reminderName);
             reminderTime = itemView.findViewById(R.id.rir_tv_reminder_time);
             recurrenceDetails = itemView.findViewById(R.id.rir_tv_reminder_recurrence_details);
-            activeSwitch = itemView.findViewById(R.id.rir_sw_active);
             reminderDate = itemView.findViewById(R.id.rir_tv_reminder_date);
             nextOccurrenceDelay = itemView.findViewById(R.id.rir_tv_next_occurrence_delay);
             endDateTime = itemView.findViewById(R.id.rir_tv_end_date_time);
+
+            activeSwitch = itemView.findViewById(R.id.rir_sw_active);
+
+            activeSwitch.setOnCheckedChangeListener((view, checked) -> {
+                if (checked) {
+                    deleteReminderConsumer.accept(reminder.getId());
+                }
+            });
         }
     }
 }

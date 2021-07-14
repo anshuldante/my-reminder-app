@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -25,10 +26,13 @@ import com.ava.myreminderapp.listener.ReminderNameChangedListener;
 import com.ava.myreminderapp.model.ReminderModel;
 
 import java.util.Calendar;
+import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import io.reactivex.Scheduler;
 
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.HOUR;
@@ -40,8 +44,10 @@ import static java.util.Calendar.YEAR;
 @AndroidEntryPoint
 public class AddReminderActivity extends AppCompatActivity {
 
+
+    // UI Components
     private ConstraintLayout recurrenceDetailsCl;
-    private ReminderModel referenceReminderDetails;
+    private ReminderModel referenceReminderModel;
     private ArrayAdapter<CharSequence> spinnerAdapter;
     private ReminderModel reminderModel;
     private Spinner recurrenceTypeSpinner;
@@ -56,6 +62,14 @@ public class AddReminderActivity extends AppCompatActivity {
     private Button saveButton;
     private Button editButton;
 
+    private final Calendar currentTime = Calendar.getInstance();
+
+    @Inject
+    @Named("reminderDaoExecutor")
+    ExecutorService reminderDaoExecutor;
+    @Inject
+    @Named("reminderDaoScheduler")
+    Scheduler reminderDaoScheduler;
     @Inject
     ReminderDao reminderDao;
 
@@ -64,8 +78,8 @@ public class AddReminderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_reminder);
 
-        referenceReminderDetails = new ReminderModel();
-        reminderModel = new ReminderModel(referenceReminderDetails);
+        referenceReminderModel = new ReminderModel();
+        reminderModel = new ReminderModel(referenceReminderModel);
 
         initComponentMappings();
         initPrimaryComponents();
@@ -121,22 +135,30 @@ public class AddReminderActivity extends AppCompatActivity {
     private void initStartDateComponents() {
         initStartDateView();
         Calendar startDateTime = reminderModel.getStartDateTime();
-        startDateImageView.setOnClickListener(view -> attachDatePickerDialog(startDateTime, this::initStartDateView));
+        startDateImageView.setOnClickListener(view -> attachDatePickerDialog(startDateTime, this::initStartDateView, true));
     }
 
-    private void attachDatePickerDialog(Calendar dateTime, Runnable runnable) {
+    private void attachDatePickerDialog(Calendar dateTime, Runnable runnable, boolean isStartDate) {
         DatePickerDialog dpd = new DatePickerDialog(this, (view, year, month, dayOfMonth) ->
-                dateSetListener(view, runnable, dateTime), dateTime.get(YEAR), dateTime.get(MONTH), dateTime.get(DATE));
+                dateSetListener(view, runnable, dateTime, isStartDate), dateTime.get(YEAR), dateTime.get(MONTH), dateTime.get(DATE));
         dpd.show();
     }
 
-    private void dateSetListener(DatePicker view, Runnable runnable, Calendar dateTime) {
+    private void dateSetListener(DatePicker view, Runnable runnable, Calendar dateTime, boolean isStartDate) {
         Log.i("View to Date: ", view.getDayOfMonth() + "/" + (view.getMonth() + 1) + "/" + view.getYear());
 
-        dateTime.set(YEAR, view.getYear());
-        dateTime.set(MONTH, view.getMonth());
-        dateTime.set(DATE, view.getDayOfMonth());
-        runnable.run();
+        currentTime.setTimeInMillis(System.currentTimeMillis());
+
+        if (isStartDate && dateTime.before(currentTime)) {
+            Toast.makeText(this, "Can't setup alarms for a time in the past!", Toast.LENGTH_LONG).show();
+        } else if (!isStartDate && dateTime.before(reminderModel.getStartDateTime())) {
+            Toast.makeText(this, "Recurrence date can't be before alarm start date!", Toast.LENGTH_LONG).show();
+        } else {
+            dateTime.set(YEAR, view.getYear());
+            dateTime.set(MONTH, view.getMonth());
+            dateTime.set(DATE, view.getDayOfMonth());
+            runnable.run();
+        }
     }
 
     private void initReminderNameComponents() {
@@ -156,18 +178,26 @@ public class AddReminderActivity extends AppCompatActivity {
     }
 
     private void initSaveButton() {
-        saveButton.setOnClickListener(this::onSaveButtonClickListener);
+        saveButton.setOnClickListener(this::saveButtonClickListener);
     }
 
     private void initResetButton() {
-        editButton.setOnClickListener(this::onResetButtonClickListener);
+        editButton.setOnClickListener(this::resetButtonClickListener);
     }
 
-    private void onSaveButtonClickListener(View v) {
-        Log.i("Saving Reminder: ", reminderModel.toString());
+    private void saveButtonClickListener(View v) {
+        reminderDaoExecutor.submit(() -> {
+            try {
+                reminderDao.add(reminderModel);
+                Log.i("Reminders: ", "Added reminder: " + reminderModel);
+                finish();
+            } catch (Exception e) {
+                Log.e("Reminders: ", "Exception while adding reminder: " + reminderModel, e);
+            }
+        });
     }
 
-    private void onResetButtonClickListener(View v) {
+    private void resetButtonClickListener(View v) {
         Log.i("Resetting Reminder from: ", reminderModel.toString());
         resetToInitialValues();
         Log.i("Reset Reminder to: ", reminderModel.toString());
@@ -188,7 +218,7 @@ public class AddReminderActivity extends AppCompatActivity {
         initEndDateView();
         ImageView endDateImageView = findViewById(R.id.ara_iv_end_calendar);
         endDateImageView.setOnClickListener(
-                view -> attachDatePickerDialog(reminderModel.getEndDateTime(), this::initEndDateView));
+                view -> attachDatePickerDialog(reminderModel.getEndDateTime(), this::initEndDateView, false));
     }
 
     private void initEndTimeComponents() {
@@ -209,8 +239,16 @@ public class AddReminderActivity extends AppCompatActivity {
     private void timeSetListener(TimePicker view, Calendar dateTime, Runnable runnable) {
         Log.i("View to Time: ", dateTime.get(HOUR) + ":" + dateTime.get(MINUTE));
 
-        dateTime.set(HOUR_OF_DAY, view.getHour());
-        dateTime.set(MINUTE, view.getMinute());
+        currentTime.setTimeInMillis(System.currentTimeMillis());
+        int hour = view.getHour();
+        int minute = view.getMinute();
+
+        if (dateTime.before(currentTime)) {
+            dateTime.set(DATE, dateTime.get(DATE) + 1);
+        }
+
+        dateTime.set(HOUR_OF_DAY, hour);
+        dateTime.set(MINUTE, minute);
         runnable.run();
     }
 
@@ -262,7 +300,7 @@ public class AddReminderActivity extends AppCompatActivity {
     }
 
     private void resetToInitialValues() {
-        reminderModel = new ReminderModel(referenceReminderDetails);
+        reminderModel = new ReminderModel(referenceReminderModel);
         initStartTimeView();
         initStartDateView();
         initReminderNameView();

@@ -39,6 +39,7 @@
     <string name="rir_default_reminder_date">Fri, 2 July</string>
     <string name="rir_default_occurrence_delay">Triggers in 4 months and 12 days</string>
     <string name="rir_default_end_date_time">12:30, 01–07–2021</string>
+    <string name="rir_default_delete_reminder">Delete Reminder</string>
 
 
     <!--  Strings for Reminder List Recycler Adapter  -->

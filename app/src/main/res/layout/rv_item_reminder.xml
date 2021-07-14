@@ -55,9 +55,20 @@
         android:layout_height="wrap_content"
         android:layout_margin="3dp"
         android:text="@string/rir_default_reminder_date"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ara_iv_delete_reminder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rir_sw_active" />
+
+    <ImageView
+        android:id="@+id/ara_iv_delete_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:contentDescription="@string/rir_default_delete_reminder"
+        android:src="@drawable/ic_clock"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/rir_tv_next_occurrence_delay"

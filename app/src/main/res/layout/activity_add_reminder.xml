@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context=".AddReminderActivity">
 
     <TimePicker
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         android:contentDescription="@string/ara_select_date_description"
-        android:src="@drawable/calendar_icon"
+        android:src="@drawable/ic_calendar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ara_time_picker_primary" />
 
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:contentDescription="@string/ara_select_date_description"
-            android:src="@drawable/calendar_icon"
+            android:src="@drawable/ic_calendar"
             app:layout_constraintStart_toEndOf="@+id/ara_tv_end_date"
             app:layout_constraintTop_toBottomOf="@+id/ara_hz_divider" />
 
@@ -141,7 +141,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:contentDescription="@string/ara_select_date_description"
-            android:src="@drawable/clock_icon"
+            android:src="@drawable/ic_clock"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ara_hz_divider" />
 
@@ -155,8 +155,7 @@
         android:text="@string/ara_button_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ara_button_reset"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ara_cl_recurrence_delay" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/ara_button_reset"
@@ -166,7 +165,6 @@
         android:text="@string/ara_button_reset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ara_button_save"
-        app:layout_constraintTop_toBottomOf="@+id/ara_cl_recurrence_delay" />
+        app:layout_constraintStart_toEndOf="@+id/ara_button_save" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

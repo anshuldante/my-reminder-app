@@ -15,14 +15,17 @@ import io.reactivex.Observable;
 public interface ReminderDao {
 
     @Insert
-    void insert(ReminderModel user);
+    void add(ReminderModel user);
 
     @Delete
     void delete(ReminderModel user);
+
+    @Query("Delete from reminders where id = :id")
+    void deleteById(int id);
 
     @Query("SELECT * FROM reminders WHERE id = :userId")
     ReminderModel getReminderById(int userId);
 
     @Query("SELECT * FROM reminders")
-    Observable<List<ReminderModel>> getAllReminder();
+    Observable<List<ReminderModel>> getAllReminders();
 }
