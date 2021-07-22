@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         compositeDisposable.dispose();
+        reminderDaoScheduler.shutdown();
+        reminderDaoExecutor.shutdown();
     }
 
     private void deleteReminder(ReminderModel reminder) {
