@@ -11,6 +11,7 @@
 * [Excessive wake ups](https://developer.android.com/topic/performance/vitals/wakeup)
 * https://stackoverflow.com/questions/7276537/using-a-broadcast-intent-broadcast-receiver-to-send-messages-from-a-service-to-a
 * https://developer.android.com/guide/topics/ui/notifiers/notifications
+* [Job Scheduler](https://github.com/googlearchive/android-JobScheduler/tree/master/Application)
 
 ## TODO (high priority)
 
