@@ -2,15 +2,9 @@
 
 ## Alarms and scheduled tasks
 
-* [Optimize for Doze and App Standby](https://developer.android.com/training/monitoring-device-state/doze-standby)
 * [Schedule tasks with WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
-* [Excessive wake ups](https://developer.android.com/topic/performance/vitals/wakeup)
-* [Service to Activity Broadcast](https://stackoverflow.com/questions/7276537/)
-* [Background Service Limitations](https://developer.android.com/about/versions/oreo/background#services)
-* [Power Limitations](https://developer.android.com/topic/performance/power/power-details)
-* using-a-broadcast-intent-broadcast-receiver-to-send-messages-from-a-service-to-a
-* https://developer.android.com/guide/topics/ui/notifiers/notifications
-* [Job Scheduler](https://github.com/googlearchive/android-JobScheduler/tree/master/Application)
+* [Notifications](https://developer.android.com/guide/topics/ui/notifiers/notifications)
+* [Testing with Doze and App Standby](https://developer.android.com/training/monitoring-device-state/doze-standby#testing_doze_and_app_standby)
 
 ## TODO (high priority)
 
@@ -30,7 +24,3 @@
 * Going below the current time doesn't change the date to tomorrow.
 * Date validation doesn't work for the end date's date picker.
 * Need validations to skip views in the recycler view if the fields are empty.
-
-## Resources
-
-* https://github.com/commonsguy/cw-omnibus
