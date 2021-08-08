@@ -2,12 +2,10 @@
 
 ## Alarms and scheduled tasks
 
-* [Schedule repeating alarms](https://developer.android.com/training/scheduling/alarms)
-* [Alarm Manager](https://developer.android.com/reference/android/app/AlarmManager)
 * [Optimize for Doze and App Standby](https://developer.android.com/training/monitoring-device-state/doze-standby)
 * [Schedule tasks with WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
 * [Excessive wake ups](https://developer.android.com/topic/performance/vitals/wakeup)
-* https://stackoverflow.com/questions/7276537/
+* [Service to Activity Broadcast](https://stackoverflow.com/questions/7276537/)
 * [Background Service Limitations](https://developer.android.com/about/versions/oreo/background#services)
 * [Power Limitations](https://developer.android.com/topic/performance/power/power-details)
 * using-a-broadcast-intent-broadcast-receiver-to-send-messages-from-a-service-to-a
