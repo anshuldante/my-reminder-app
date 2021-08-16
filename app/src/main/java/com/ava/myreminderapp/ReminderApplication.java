@@ -7,8 +7,8 @@ import dagger.hilt.android.HiltAndroidApp;
 @HiltAndroidApp
 public class ReminderApplication extends Application {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
+  @Override
+  public void onCreate() {
+    super.onCreate();
+  }
 }

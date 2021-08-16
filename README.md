@@ -2,9 +2,12 @@
 
 ## Alarms and scheduled tasks
 
+* [WorkManager writeup](https://medium.com/google-developer-experts/services-the-life-with-without-and-worker-6933111d62a6)
+* [Impact of App Force Close](https://stackoverflow.com/questions/14041208/how-to-reset-alarm-if-app-is-force-closed-in-android?noredirect=1&lq=1)
 * [Schedule tasks with WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
 * [Notifications](https://developer.android.com/guide/topics/ui/notifiers/notifications)
 * [Testing with Doze and App Standby](https://developer.android.com/training/monitoring-device-state/doze-standby#testing_doze_and_app_standby)
+* [Creating a simple alarm app](https://learntodroid.com/how-to-create-a-simple-alarm-clock-app-in-android/)
 
 ## TODO (high priority)
 

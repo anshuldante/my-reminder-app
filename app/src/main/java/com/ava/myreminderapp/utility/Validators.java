@@ -1,5 +1,3 @@
 package com.ava.myreminderapp.utility;
 
-public class Validators {
-
-}
+public class Validators {}

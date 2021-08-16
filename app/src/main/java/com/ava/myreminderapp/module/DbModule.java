@@ -25,29 +25,30 @@ import io.reactivex.schedulers.Schedulers;
 @InstallIn(SingletonComponent.class)
 public class DbModule {
 
-    @Provides
-    @Singleton
-    @Named("reminderDaoExecutor")
-    public ExecutorService getReminderDaoExecutorService() {
-        return Executors.newFixedThreadPool(5);
-    }
+  @Provides
+  @Singleton
+  @Named("reminderDaoExecutor")
+  public ExecutorService getReminderDaoExecutorService() {
+    return Executors.newFixedThreadPool(5);
+  }
 
-    @Provides
-    @Singleton
-    @Named("reminderDaoScheduler")
-    public Scheduler getReminderDaoScheduler(@Named("reminderDaoExecutor") ExecutorService executorService) {
-        return Schedulers.from(executorService);
-    }
+  @Provides
+  @Singleton
+  @Named("reminderDaoScheduler")
+  public Scheduler getReminderDaoScheduler(
+      @Named("reminderDaoExecutor") ExecutorService executorService) {
+    return Schedulers.from(executorService);
+  }
 
-    @Provides
-    @Singleton
-    public RemindersDb getRemindersDb(@ApplicationContext Context context) {
-        return Room.databaseBuilder(context, RemindersDb.class, "Reminders-DB").build();
-    }
+  @Provides
+  @Singleton
+  public RemindersDb getRemindersDb(@ApplicationContext Context context) {
+    return Room.databaseBuilder(context, RemindersDb.class, "Reminders-DB").build();
+  }
 
-    @Provides
-    @Singleton
-    public ReminderDao getReminderDao(RemindersDb remindersDb) {
-        return remindersDb.reminderDao();
-    }
+  @Provides
+  @Singleton
+  public ReminderDao getReminderDao(RemindersDb remindersDb) {
+    return remindersDb.reminderDao();
+  }
 }
