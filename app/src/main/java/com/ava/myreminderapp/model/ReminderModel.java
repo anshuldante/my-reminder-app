@@ -1,5 +1,6 @@
 package com.ava.myreminderapp.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -10,6 +11,7 @@ import com.ava.myreminderapp.converter.DbTypeConverters;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity(tableName = "reminders")
 @TypeConverters(DbTypeConverters.class)
@@ -149,6 +151,7 @@ public class ReminderModel {
     this.endDateTime = endDateTime;
   }
 
+  @NonNull
   @Override
   public String toString() {
     return "ReminderDetails{"
@@ -173,5 +176,25 @@ public class ReminderModel {
         + ", modifiedDate="
         + modifiedDate
         + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ReminderModel that = (ReminderModel) o;
+    return id == that.id
+        && active == that.active
+        && name.equals(that.name)
+        && startDateTime.equals(that.startDateTime)
+        && Objects.equals(recurrenceDelay, that.recurrenceDelay)
+        && recurrenceType == that.recurrenceType
+        && Objects.equals(endDateTime, that.endDateTime);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id, active, name, startDateTime, recurrenceDelay, recurrenceType, endDateTime);
   }
 }

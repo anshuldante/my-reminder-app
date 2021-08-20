@@ -26,35 +26,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.ava.myreminderapp.data.ReminderDao;
+import com.ava.myreminderapp.data.ReminderDmlViewModel;
 import com.ava.myreminderapp.listener.RecurrenceDelayChangedListener;
 import com.ava.myreminderapp.listener.RecurrenceTypeListener;
 import com.ava.myreminderapp.listener.ReminderNameChangedListener;
 import com.ava.myreminderapp.model.ReminderModel;
 
 import java.util.Calendar;
-import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import dagger.hilt.android.AndroidEntryPoint;
-import io.reactivex.Scheduler;
 
 @AndroidEntryPoint
 public class AddReminderActivity extends AppCompatActivity {
 
   private final Calendar currentTime = Calendar.getInstance();
 
-  @Inject
-  @Named("reminderDaoExecutor")
-  ExecutorService reminderDaoExecutor;
+  @Inject ReminderDmlViewModel reminderDmlViewModel;
 
-  @Inject
-  @Named("reminderDaoScheduler")
-  Scheduler reminderDaoScheduler;
-
-  @Inject ReminderDao reminderDao;
   // UI Components
   private ConstraintLayout recurrenceDetailsCl;
   private ReminderModel referenceReminderModel;
@@ -199,16 +189,8 @@ public class AddReminderActivity extends AppCompatActivity {
   }
 
   private void saveButtonClickListener(View v) {
-    reminderDaoExecutor.submit(
-        () -> {
-          try {
-            reminderDao.add(reminderModel);
-            Log.i("Reminders: ", "Added reminder: " + reminderModel);
-            finish();
-          } catch (Exception e) {
-            Log.e("Reminders: ", "Exception while adding reminder: " + reminderModel, e);
-          }
-        });
+    reminderDmlViewModel.addReminder(reminderModel);
+    finish();
   }
 
   private void resetButtonClickListener(View v) {

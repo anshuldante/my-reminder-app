@@ -12,44 +12,39 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ava.myreminderapp.R;
+import com.ava.myreminderapp.data.ReminderDmlViewModel;
 import com.ava.myreminderapp.model.ReminderModel;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ReminderItemAdapter
-    extends RecyclerView.Adapter<ReminderItemAdapter.ReminderItemViewHolder> {
-  private final List<ReminderModel> dataset;
-  private final Context context;
-  private final Consumer<ReminderModel> deleteReminderConsumer;
-  private final BiConsumer<ReminderModel, Boolean> updateReminderStatus;
+    extends ListAdapter<ReminderModel, ReminderItemAdapter.ReminderItemViewHolder> {
 
-  public ReminderItemAdapter(
-      List<ReminderModel> dataset,
-      Context context,
-      Consumer<ReminderModel> deleteReminderConsumer,
-      BiConsumer<ReminderModel, Boolean> updateReminderStatus) {
-    this.dataset = dataset;
+  private static final ReminderDiffCallback DIFF_CALLBACK = new ReminderDiffCallback();
+  private final Context context;
+  private final ReminderDmlViewModel dmlViewModel;
+
+  public ReminderItemAdapter(Context context, ReminderDmlViewModel dmlViewModel) {
+    super(DIFF_CALLBACK);
     this.context = context;
-    this.deleteReminderConsumer = deleteReminderConsumer;
-    this.updateReminderStatus = updateReminderStatus;
+    this.dmlViewModel = dmlViewModel;
   }
 
   @NonNull
   @Override
   public ReminderItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(context).inflate(R.layout.rv_item_reminder, parent, false);
+    View view =
+        LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_item_reminder, parent, false);
     return new ReminderItemViewHolder(view);
   }
 
   @Override
   public void onBindViewHolder(@NonNull ReminderItemViewHolder holder, int position) {
-    ReminderModel reminder = dataset.get(position);
+    ReminderModel reminder = getItem(position);
 
     holder.reminder = reminder;
 
@@ -96,11 +91,6 @@ public class ReminderItemAdapter
     }
   }
 
-  @Override
-  public int getItemCount() {
-    return dataset.size();
-  }
-
   public class ReminderItemViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView reminderName;
@@ -130,7 +120,7 @@ public class ReminderItemAdapter
 
     private void toggleReminderStatus(CompoundButton buttonView, boolean isChecked) {
       if (isChecked != reminder.isActive()) {
-        updateReminderStatus.accept(reminder, isChecked);
+        dmlViewModel.updateReminderStatus(reminder, isChecked);
       }
     }
 
@@ -144,7 +134,7 @@ public class ReminderItemAdapter
                   R.string.ria_delete_dialog_confirm,
                   (dialog, which) -> {
                     Log.i("Reminders: ", "Delete confirmed!");
-                    deleteReminderConsumer.accept(reminder);
+                    dmlViewModel.deleteReminder(reminder);
                   })
               .setNegativeButton(
                   R.string.ria_delete_dialog_cancel,
@@ -152,5 +142,9 @@ public class ReminderItemAdapter
               .create();
       alertDialog.show();
     }
+  }
+
+  public ReminderModel getReminderAt(int position) {
+    return getItem(position);
   }
 }

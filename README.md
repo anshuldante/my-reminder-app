@@ -11,6 +11,12 @@
 
 ## TODO (high priority)
 
+* ~~Switch to LiveData from Observable if things don't work as expected.~~
+* ~~Switch to ViewModel for CRUD.~~
+* Switch to ListAdapter.
+* Cleanup Add Reminder Activity.
+  * Add the buttons on an action bar.
+  * 
 * Add capabilities to select ringtones and sounds.
 * Add capability to trigger an alarm.
 * Add background services to trigger alarms as scheduled.
@@ -21,6 +27,11 @@
 
 * Use [this](https://developer.android.com/guide/topics/ui/controls/pickers#java) to convert the date and time pickers to fragments.
 * Use [this](https://developer.android.com/guide/topics/ui/dialogs) to convert dialog to DialogFragment.
+* Scheduler and executer cleanup if needed.
+* Look into ,TextInputLayout, SnackBars, TabLayout (for tabs), NavigationView (for sliding screens), Coordinator layout.
+* AppBarLayout, BottomAppBar
+* Delete All menu item in general, long click will allow selection and deletion.
+* LiveData and Observables can be used well together. We can use observables for everything else and use LiveData just at the ViewModel, since LiveData is lifecycle aware.
 
 ## Bugs
 
