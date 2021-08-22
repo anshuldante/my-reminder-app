@@ -1,9 +1,7 @@
 package com.ava.myreminderapp.model;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public enum RecurrenceType {
   YEAR("Year(s)"),
@@ -12,10 +10,16 @@ public enum RecurrenceType {
   HOUR("Hour(s)"),
   MINUTE("Minute(s)");
 
-  private static final Map<String, RecurrenceType> ENUM_MAP =
-      new HashMap<>(
-          Arrays.stream(RecurrenceType.values())
-              .collect(Collectors.toMap(RecurrenceType::getValue, rt -> rt)));
+  private static final Map<String, RecurrenceType> ENUM_MAP;
+
+  static {
+    ENUM_MAP = new HashMap<>();
+    ENUM_MAP.put(YEAR.getValue(), YEAR);
+    ENUM_MAP.put(MONTH.getValue(), MONTH);
+    ENUM_MAP.put(DAY.getValue(), DAY);
+    ENUM_MAP.put(HOUR.getValue(), HOUR);
+    ENUM_MAP.put(MINUTE.getValue(), MINUTE);
+  }
 
   private final String value;
 

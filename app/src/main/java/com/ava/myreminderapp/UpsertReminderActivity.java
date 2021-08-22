@@ -9,11 +9,13 @@ import static java.util.Calendar.YEAR;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -33,13 +36,22 @@ import com.ava.myreminderapp.listener.ReminderNameChangedListener;
 import com.ava.myreminderapp.model.ReminderModel;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class AddReminderActivity extends AppCompatActivity {
+public class UpsertReminderActivity extends AppCompatActivity {
+
+  public static final String REMINDER_ID = "com.ava.myreminderapp.REMINDER_ID";
+  public static final String REMINDER_ACTIVE = "com.ava.myreminderapp.REMINDER_ACTIVE";
+  public static final String REMINDER_NAME = "com.ava.myreminderapp.REMINDER_NAME";
+  public static final String REMINDER_START_TIME = "com.ava.myreminderapp.REMINDER_START_TIME";
+  public static final String REMINDER_RECURRENCE_DELAY = "com.ava.myreminderapp.REMINDER_REC_DELAY";
+  public static final String REMINDER_RECURRENCE_TYPE = "com.ava.myreminderapp.REMINDER_REC_TYPE";
+  public static final String REMINDER_END_TIME = "com.ava.myreminderapp.REMINDER_END_TIME";
 
   private final Calendar currentTime = Calendar.getInstance();
 
@@ -47,7 +59,6 @@ public class AddReminderActivity extends AppCompatActivity {
 
   // UI Components
   private ConstraintLayout recurrenceDetailsCl;
-  private ReminderModel referenceReminderModel;
   private ArrayAdapter<CharSequence> spinnerAdapter;
   private ReminderModel reminderModel;
   private Spinner recurrenceTypeSpinner;
@@ -59,20 +70,64 @@ public class AddReminderActivity extends AppCompatActivity {
   private TextView endDateTextView;
   private TextView endTimeTextView;
   private EditText reminderName;
-  private Button saveButton;
-  private Button editButton;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_add_reminder);
+    setContentView(R.layout.activity_upsert_reminder);
 
-    referenceReminderModel = new ReminderModel();
-    reminderModel = new ReminderModel(referenceReminderModel);
+    setupToolbar();
+
+    reminderModel = buildReminderAndSetTitle();
 
     initComponentMappings();
     initPrimaryComponents();
     initRecurrenceComponents();
+  }
+
+  private void setupToolbar() {
+    setSupportActionBar(findViewById(R.id.aur_tb));
+    Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    getSupportActionBar().setDisplayShowHomeEnabled(true);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.upsert_menu, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    if (item.getItemId() == R.id.save_reminder) {
+      saveNote();
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
+  private void saveNote() {
+    reminderDmlViewModel.addReminder(reminderModel);
+    finish();
+  }
+
+  private ReminderModel buildReminderAndSetTitle() {
+    Intent intent = getIntent();
+    int id = intent.getIntExtra(REMINDER_ID, -1);
+    if (id != -1) {
+      setTitle(R.string.era_title_edit_reminder);
+      return new ReminderModel(
+          id,
+          intent.getStringExtra(REMINDER_NAME),
+          intent.getBooleanExtra(REMINDER_ACTIVE, false),
+          intent.getLongExtra(REMINDER_START_TIME, 0),
+          intent.getIntExtra(REMINDER_RECURRENCE_DELAY, 0),
+          intent.getStringExtra(REMINDER_RECURRENCE_TYPE),
+          intent.getLongExtra(REMINDER_END_TIME, 0));
+    }
+    setTitle(R.string.era_title_add_reminder);
+    return new ReminderModel();
   }
 
   private void initComponentMappings() {
@@ -90,8 +145,6 @@ public class AddReminderActivity extends AppCompatActivity {
     reminderName = findViewById(R.id.ara_et_reminder_name);
     endDateTextView = findViewById(R.id.ara_tv_end_date);
     endTimeTextView = findViewById(R.id.ara_tv_end_time);
-    saveButton = findViewById(R.id.ara_button_save);
-    editButton = findViewById(R.id.ara_button_reset);
   }
 
   private void initPrimaryComponents() {
@@ -99,8 +152,6 @@ public class AddReminderActivity extends AppCompatActivity {
     initStartDateComponents();
     initReminderNameComponents();
     initRecurrenceSwitchListener();
-    initSaveButton();
-    initResetButton();
   }
 
   private void initRecurrenceComponents() {
@@ -174,29 +225,9 @@ public class AddReminderActivity extends AppCompatActivity {
         (buttonView, isChecked) -> {
           recurrenceDetailsCl.setVisibility(isChecked ? View.VISIBLE : View.GONE);
           if (!isChecked) {
-            reminderModel.setRecurrenceDelay(null);
             initRecurrenceDelayView();
           }
         });
-  }
-
-  private void initSaveButton() {
-    saveButton.setOnClickListener(this::saveButtonClickListener);
-  }
-
-  private void initResetButton() {
-    editButton.setOnClickListener(this::resetButtonClickListener);
-  }
-
-  private void saveButtonClickListener(View v) {
-    reminderDmlViewModel.addReminder(reminderModel);
-    finish();
-  }
-
-  private void resetButtonClickListener(View v) {
-    Log.i("Resetting Reminder from: ", reminderModel.toString());
-    resetToInitialValues();
-    Log.i("Reset Reminder to: ", reminderModel.toString());
   }
 
   private void initRecurrenceTypeSpinner() {
@@ -229,7 +260,6 @@ public class AddReminderActivity extends AppCompatActivity {
     TimePickerDialog tpd =
         new TimePickerDialog(
             this,
-            android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
             ((view, hourOfDay, minute) -> timeSetListener(view, dateTime, runnable)),
             dateTime.get(HOUR_OF_DAY),
             dateTime.get(MINUTE),
@@ -283,7 +313,7 @@ public class AddReminderActivity extends AppCompatActivity {
   }
 
   private void initRecurrenceSwitchView() {
-    recurrenceSwitch.setChecked(reminderModel.getRecurrenceDelay() != null);
+    recurrenceSwitch.setChecked(reminderModel.getRecurrenceDelay() > 0);
   }
 
   private void initRecurrenceTypeView() {
@@ -293,11 +323,7 @@ public class AddReminderActivity extends AppCompatActivity {
   }
 
   private void initRecurrenceDelayView() {
-    Integer recurrenceDelay = reminderModel.getRecurrenceDelay();
-    Log.i(
-        "Recurrence Delay to View: ",
-        recurrenceDelay != null ? recurrenceDelay.toString() : "is null ");
-    recurrenceDelayEt.setText(recurrenceDelay != null ? recurrenceDelay.toString() : null);
+    recurrenceDelayEt.setText(Integer.toString(reminderModel.getRecurrenceDelay()));
   }
 
   private void initEndDateView() {
@@ -318,17 +344,5 @@ public class AddReminderActivity extends AppCompatActivity {
     Log.i("End time to view: ", dateTime.get(HOUR_OF_DAY) + ":" + dateTime.get(MINUTE));
     endTimeTextView.setText(
         getString(R.string.ara_reminder_end_time, dateTime.get(HOUR_OF_DAY), dateTime.get(MINUTE)));
-  }
-
-  private void resetToInitialValues() {
-    reminderModel = new ReminderModel(referenceReminderModel);
-    initStartTimeView();
-    initStartDateView();
-    initReminderNameView();
-    initRecurrenceSwitchView();
-    initRecurrenceTypeView();
-    initRecurrenceDelayView();
-    initEndDateView();
-    initEndTimeView();
   }
 }

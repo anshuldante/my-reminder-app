@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.room.Room;
 
 import com.ava.myreminderapp.data.GetAllRemindersViewModel;
-import com.ava.myreminderapp.data.GetReminderViewModel;
 import com.ava.myreminderapp.data.ReminderDao;
 import com.ava.myreminderapp.data.ReminderDmlViewModel;
 import com.ava.myreminderapp.data.ReminderRepository;
@@ -57,12 +56,6 @@ public class DbModule {
   @Singleton
   public GetAllRemindersViewModel getAllNotesViewModel(ReminderRepository reminderRepository) {
     return new GetAllRemindersViewModel(reminderRepository);
-  }
-
-  @Provides
-  @Singleton
-  public GetReminderViewModel GetReminderViewModel(ReminderRepository reminderRepository) {
-    return new GetReminderViewModel(reminderRepository);
   }
 
   @Provides

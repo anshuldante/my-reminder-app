@@ -3,22 +3,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddReminderActivity">
+    tools:context=".UpsertReminderActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/aur_tb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <TimePicker
         android:id="@+id/ara_time_picker_primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="32dp"
         android:timePickerMode="spinner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/aur_tb" />
 
     <TextView
         android:id="@+id/ara_display_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/ara_default_display_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ara_time_picker_primary" />
@@ -27,7 +45,10 @@
         android:id="@+id/ara_iv_calendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="32dp"
         android:contentDescription="@string/ara_select_date_description"
         android:src="@drawable/ic_calendar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +58,10 @@
         android:id="@+id/ara_et_reminder_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="32dp"
         android:autofillHints="Rise and Shine!, Sleeping Time!"
         android:hint="@string/ara_hint_reminder_name"
         android:inputType="textShortMessage"
@@ -49,9 +73,11 @@
         android:id="@+id/ara_sc_recurring_reminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/ara_switch_repeat_reminder"
-        app:layout_constraintBottom_toTopOf="@+id/ara_cl_recurrence_delay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ara_et_reminder_name" />
@@ -60,8 +86,11 @@
         android:id="@+id/ara_cl_recurrence_delay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:visibility="gone"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ara_sc_recurring_reminder">
 
         <TextView
@@ -69,7 +98,10 @@
             style="@android:style/TextAppearance.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="32dp"
             android:text="@string/ara_label_every"
             app:layout_constraintBottom_toTopOf="@id/ara_hz_divider"
             app:layout_constraintStart_toStartOf="parent"
@@ -79,7 +111,10 @@
             android:id="@+id/ara_et_recurrence_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="32dp"
             android:autofillHints="1,2,3,4"
             android:hint="@string/ara_repetition_delay"
             android:inputType="number"
@@ -93,7 +128,10 @@
             style="@android:style/TextAppearance.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="32dp"
             android:autofillHints="a,b,c"
             app:layout_constraintBottom_toTopOf="@id/ara_hz_divider"
             app:layout_constraintEnd_toEndOf="parent"
@@ -102,7 +140,10 @@
         <View
             android:id="@+id/ara_hz_divider"
             style="@style/Divider"
-            android:layout_margin="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ara_et_recurrence_number" />
@@ -111,7 +152,10 @@
             android:id="@+id/ara_tv_end_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="32dp"
             android:text="@string/ara_date_default"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ara_hz_divider" />
@@ -120,7 +164,10 @@
             android:id="@+id/ara_iv_end_calendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="32dp"
             android:contentDescription="@string/ara_select_date_description"
             android:src="@drawable/ic_calendar"
             app:layout_constraintStart_toEndOf="@+id/ara_tv_end_date"
@@ -130,7 +177,10 @@
             android:id="@+id/ara_tv_end_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="32dp"
             android:text="@string/ara_time_default"
             app:layout_constraintEnd_toStartOf="@id/ara_iv_end_clock"
             app:layout_constraintTop_toBottomOf="@+id/ara_hz_divider" />
@@ -139,32 +189,15 @@
             android:id="@+id/ara_iv_end_clock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="32dp"
             android:contentDescription="@string/ara_select_date_description"
             android:src="@drawable/ic_clock"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ara_hz_divider" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Button
-        android:id="@+id/ara_button_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/ara_button_save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ara_button_reset"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/ara_button_reset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/ara_button_reset"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ara_button_save" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

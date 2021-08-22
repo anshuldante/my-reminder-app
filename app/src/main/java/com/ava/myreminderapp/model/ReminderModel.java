@@ -28,7 +28,7 @@ public class ReminderModel {
   private Calendar startDateTime;
 
   @ColumnInfo(name = "recurrence_delay")
-  private Integer recurrenceDelay;
+  private int recurrenceDelay;
 
   @ColumnInfo(name = "recurrence_type")
   private RecurrenceType recurrenceType;
@@ -59,24 +59,22 @@ public class ReminderModel {
 
   @Ignore
   public ReminderModel(
-      String name, Integer recurrenceDelay, RecurrenceType recurrenceType, Calendar endDateTime) {
-    this(name);
+      int id,
+      String name,
+      boolean active,
+      long startTime,
+      Integer recurrenceDelay,
+      String recurrenceType,
+      long endTime) {
+    this.id = id;
+    this.name = name;
+    this.active = active;
+    this.startDateTime = Calendar.getInstance();
+    this.startDateTime.setTime(new Date(startTime));
     this.recurrenceDelay = recurrenceDelay;
-    this.recurrenceType = recurrenceType;
-    this.endDateTime = endDateTime;
-  }
-
-  @Ignore
-  public ReminderModel(ReminderModel reminderModel) {
-    this.id = reminderModel.id;
-    this.active = reminderModel.isActive();
-    this.name = reminderModel.getName();
-    this.startDateTime = reminderModel.getStartDateTime();
-    this.recurrenceDelay = reminderModel.getRecurrenceDelay();
-    this.recurrenceType = reminderModel.getRecurrenceType();
-    this.endDateTime = reminderModel.getEndDateTime();
-    this.createdDate = reminderModel.getCreatedDate();
-    this.modifiedDate = reminderModel.getModifiedDate();
+    this.recurrenceType = RecurrenceType.valueOf(recurrenceType);
+    this.endDateTime = Calendar.getInstance();
+    this.endDateTime.setTime(new Date(endTime));
   }
 
   public int getId() {
@@ -119,11 +117,11 @@ public class ReminderModel {
     this.modifiedDate = modifiedDate;
   }
 
-  public Integer getRecurrenceDelay() {
+  public int getRecurrenceDelay() {
     return recurrenceDelay;
   }
 
-  public void setRecurrenceDelay(Integer recurrenceDelay) {
+  public void setRecurrenceDelay(int recurrenceDelay) {
     this.recurrenceDelay = recurrenceDelay;
   }
 

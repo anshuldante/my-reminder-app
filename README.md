@@ -13,10 +13,11 @@
 
 * ~~Switch to LiveData from Observable if things don't work as expected.~~
 * ~~Switch to ViewModel for CRUD.~~
-* Switch to ListAdapter.
-* Cleanup Add Reminder Activity.
-  * Add the buttons on an action bar.
-  * 
+* ~~Switch to ListAdapter.~~
+* ~~Cleanup Add Reminder Activity.~~
+  * ~~Add the buttons on an action bar.~~
+  * ~~Clean up the views.~~
+* Change all EditTexts to TextInputEditText.
 * Add capabilities to select ringtones and sounds.
 * Add capability to trigger an alarm.
 * Add background services to trigger alarms as scheduled.
@@ -30,7 +31,7 @@
 * Scheduler and executer cleanup if needed.
 * Look into ,TextInputLayout, SnackBars, TabLayout (for tabs), NavigationView (for sliding screens), Coordinator layout.
 * AppBarLayout, BottomAppBar
-* Delete All menu item in general, long click will allow selection and deletion.
+* Delete All menu item in general long-click will allow selection and deletion.
 * LiveData and Observables can be used well together. We can use observables for everything else and use LiveData just at the ViewModel, since LiveData is lifecycle aware.
 
 ## Bugs

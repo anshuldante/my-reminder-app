@@ -79,8 +79,4 @@ public class ReminderRepository {
   public LiveData<List<ReminderModel>> getAll() {
     return getAllObservable;
   }
-
-  public LiveData<ReminderModel> getReminder(int id) {
-    return reminderDao.get(id);
-  }
 }

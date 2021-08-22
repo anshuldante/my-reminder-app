@@ -11,6 +11,7 @@
 
     <!--  Strings for the Main Activity  -->
 
+    <string name="main_activity_title">My Reminders</string>
     <string name="am_fab_add_reminder">Add Reminder</string>
     <string name="am_button_delete_all">Delete All Notes</string>
     <string name="am_tv_no_reminders">No Reminders found\nClick + to add a reminder</string>
@@ -55,5 +56,8 @@
     <string name="ria_delete_dialog_message">Are you sure you want to delete \"%1$s\"?</string>
     <string name="ria_delete_dialog_confirm">Delete</string>
     <string name="ria_delete_dialog_cancel">Cancel</string>
+    <string name="era_title_add_reminder">Add Reminder</string>
+    <string name="era_title_edit_reminder">Edit Reminder</string>
+    <string name="ara_button_close">close</string>
 
 </resources>

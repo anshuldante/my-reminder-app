@@ -2,12 +2,10 @@ package com.ava.myreminderapp.listener;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 
 import com.ava.myreminderapp.model.ReminderModel;
 
 public class RecurrenceDelayChangedListener implements TextWatcher {
-  private static final String NUMBER_REGEX = "\\d+";
 
   private final ReminderModel reminder;
 
@@ -23,11 +21,6 @@ public class RecurrenceDelayChangedListener implements TextWatcher {
 
   @Override
   public void afterTextChanged(Editable s) {
-    Integer recurrenceDelay = null;
-    if (s != null && s.toString().trim().matches(NUMBER_REGEX)) {
-      Log.i("Edit Text to Recurrence Delay: ", s.toString());
-      recurrenceDelay = Integer.parseInt(s.toString());
-    }
-    reminder.setRecurrenceDelay(recurrenceDelay);
+    reminder.setRecurrenceDelay(Integer.parseInt(s.toString()));
   }
 }

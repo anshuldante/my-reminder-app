@@ -1,5 +1,13 @@
 package com.ava.myreminderapp;
 
+import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_ACTIVE;
+import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_END_TIME;
+import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_ID;
+import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_NAME;
+import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_RECURRENCE_DELAY;
+import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_RECURRENCE_TYPE;
+import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_START_TIME;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ava.myreminderapp.adapter.ReminderItemAdapter;
 import com.ava.myreminderapp.data.GetAllRemindersViewModel;
 import com.ava.myreminderapp.data.ReminderDmlViewModel;
+import com.ava.myreminderapp.model.ReminderModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import javax.inject.Inject;
@@ -40,20 +49,34 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
 
     Toolbar toolbar = findViewById(R.id.am_tb);
-    toolbar.setTitle("My Reminders");
+    toolbar.setTitle(R.string.main_activity_title);
     setSupportActionBar(toolbar);
 
     FloatingActionButton addReminderButton = findViewById(R.id.am_fab_add_reminder);
-    addReminderButton.setOnClickListener(
-        view -> startActivity(new Intent(this, AddReminderActivity.class)));
+    addReminderButton.setOnClickListener(view -> startUpsertReminderActivity(null));
 
     emptyReminderList = findViewById(R.id.am_tv_no_reminders);
 
-    reminderItemAdapter = new ReminderItemAdapter(this, reminderDml);
+    reminderItemAdapter =
+        new ReminderItemAdapter(this, reminderDml, this::startUpsertReminderActivity);
     reminderRecyclerView = findViewById(R.id.am_rv_reminders);
     reminderRecyclerView.setAdapter(reminderItemAdapter);
     attachItemClickHelper();
     observeAllReminders();
+  }
+
+  private void startUpsertReminderActivity(ReminderModel model) {
+    Intent intent = new Intent(this, UpsertReminderActivity.class);
+    if (model != null) {
+      intent.putExtra(REMINDER_ID, model.getId());
+      intent.putExtra(REMINDER_ACTIVE, model.isActive());
+      intent.putExtra(REMINDER_NAME, model.getName());
+      intent.putExtra(REMINDER_START_TIME, model.getStartDateTime().getTime().getTime());
+      intent.putExtra(REMINDER_RECURRENCE_DELAY, model.getRecurrenceDelay());
+      intent.putExtra(REMINDER_RECURRENCE_TYPE, model.getRecurrenceType().toString());
+      intent.putExtra(REMINDER_END_TIME, model.getEndDateTime().getTime().getTime());
+    }
+    startActivity(intent);
   }
 
   private void attachItemClickHelper() {
@@ -118,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
       return true;
     } else if (item.getItemId() == R.id.delete_selected_notes) {
       Toast.makeText(this, "Deleting selected notes", Toast.LENGTH_SHORT).show();
+      return true;
     }
     return super.onOptionsItemSelected(item);
   }
