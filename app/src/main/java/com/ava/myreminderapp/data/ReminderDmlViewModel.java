@@ -16,6 +16,10 @@ public class ReminderDmlViewModel extends ViewModel {
     reminderRepository.add(model);
   }
 
+  public void updateReminder(ReminderModel model) {
+    reminderRepository.update(model);
+  }
+
   public void updateReminderStatus(ReminderModel model, boolean isActive) {
     reminderRepository.updateStatus(model, isActive);
   }

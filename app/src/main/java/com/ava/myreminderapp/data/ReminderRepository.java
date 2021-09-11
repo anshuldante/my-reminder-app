@@ -76,6 +76,18 @@ public class ReminderRepository {
         });
   }
 
+  public void update(ReminderModel model) {
+    reminderDaoExecutor.submit(
+        () -> {
+          try {
+            reminderDao.update(model);
+            Log.i("ReminderRepository: ", "Updated reminder: " + model);
+          } catch (Exception e) {
+            Log.e("ReminderRepository: ", "Error while updating the reminder: " + model, e);
+          }
+        });
+  }
+
   public LiveData<List<ReminderModel>> getAll() {
     return getAllObservable;
   }

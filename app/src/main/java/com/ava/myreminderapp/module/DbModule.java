@@ -54,7 +54,7 @@ public class DbModule {
 
   @Provides
   @Singleton
-  public GetAllRemindersViewModel getAllNotesViewModel(ReminderRepository reminderRepository) {
+  public GetAllRemindersViewModel getAllRemindersViewModel(ReminderRepository reminderRepository) {
     return new GetAllRemindersViewModel(reminderRepository);
   }
 

@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.ava.myreminderapp.model.ReminderModel;
 
@@ -24,6 +25,9 @@ public interface ReminderDao {
 
   @Query("update reminders set active = :isActive where id = :id")
   void updateStatus(int id, boolean isActive);
+
+  @Update
+  void update(ReminderModel model);
 
   @Query("SELECT * FROM reminders order by name")
   LiveData<List<ReminderModel>> getAll();

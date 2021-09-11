@@ -71,10 +71,10 @@ public class MainActivity extends AppCompatActivity {
       intent.putExtra(REMINDER_ID, model.getId());
       intent.putExtra(REMINDER_ACTIVE, model.isActive());
       intent.putExtra(REMINDER_NAME, model.getName());
-      intent.putExtra(REMINDER_START_TIME, model.getStartDateTime().getTime().getTime());
+      intent.putExtra(REMINDER_START_TIME, model.getStartDateTime().getTimeInMillis());
       intent.putExtra(REMINDER_RECURRENCE_DELAY, model.getRecurrenceDelay());
       intent.putExtra(REMINDER_RECURRENCE_TYPE, model.getRecurrenceType().toString());
-      intent.putExtra(REMINDER_END_TIME, model.getEndDateTime().getTime().getTime());
+      intent.putExtra(REMINDER_END_TIME, model.getEndDateTime().getTimeInMillis());
     }
     startActivity(intent);
   }
@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
               public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 reminderDml.deleteReminder(
                     reminderItemAdapter.getReminderAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(MainActivity.this, "All notes deleted!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Deleted all reminders", Toast.LENGTH_SHORT)
+                    .show();
               }
             })
         .attachToRecyclerView(reminderRecyclerView);
@@ -135,12 +136,12 @@ public class MainActivity extends AppCompatActivity {
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-    if (item.getItemId() == R.id.delete_all_notes) {
+    if (item.getItemId() == R.id.delete_all_reminders) {
       reminderDml.deleteAllReminders();
-      Toast.makeText(this, "All notes deleted!", Toast.LENGTH_SHORT).show();
+      Toast.makeText(this, "Deleted all reminders", Toast.LENGTH_SHORT).show();
       return true;
-    } else if (item.getItemId() == R.id.delete_selected_notes) {
-      Toast.makeText(this, "Deleting selected notes", Toast.LENGTH_SHORT).show();
+    } else if (item.getItemId() == R.id.delete_selected_reminder) {
+      Toast.makeText(this, "Deleting selected reminders", Toast.LENGTH_SHORT).show();
       return true;
     }
     return super.onOptionsItemSelected(item);

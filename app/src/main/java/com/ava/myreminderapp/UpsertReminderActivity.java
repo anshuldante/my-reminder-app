@@ -101,14 +101,18 @@ public class UpsertReminderActivity extends AppCompatActivity {
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     if (item.getItemId() == R.id.save_reminder) {
-      saveNote();
+      saveReminder();
       return true;
     }
     return super.onOptionsItemSelected(item);
   }
 
-  private void saveNote() {
-    reminderDmlViewModel.addReminder(reminderModel);
+  private void saveReminder() {
+    if (reminderModel.getId() > 0) {
+      reminderDmlViewModel.updateReminder(reminderModel);
+    } else {
+      reminderDmlViewModel.addReminder(reminderModel);
+    }
     finish();
   }
 

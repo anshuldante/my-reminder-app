@@ -36,16 +36,8 @@ public class ReminderModel {
   @ColumnInfo(name = "end_date")
   private Calendar endDateTime;
 
-  @ColumnInfo(name = "created_date")
-  private Date createdDate;
-
-  @ColumnInfo(name = "modified_date")
-  private Date modifiedDate;
-
   public ReminderModel() {
     this.active = true;
-    this.createdDate = new Date();
-    this.modifiedDate = new Date();
     this.recurrenceType = RecurrenceType.DAY;
     this.endDateTime = Calendar.getInstance();
     this.startDateTime = Calendar.getInstance();
@@ -101,22 +93,6 @@ public class ReminderModel {
     this.name = name;
   }
 
-  public Date getCreatedDate() {
-    return createdDate;
-  }
-
-  public void setCreatedDate(Date createdDate) {
-    this.createdDate = createdDate;
-  }
-
-  public Date getModifiedDate() {
-    return modifiedDate;
-  }
-
-  public void setModifiedDate(Date modifiedDate) {
-    this.modifiedDate = modifiedDate;
-  }
-
   public int getRecurrenceDelay() {
     return recurrenceDelay;
   }
@@ -169,10 +145,6 @@ public class ReminderModel {
         + recurrenceType
         + ", endDateTime="
         + endDateTime.getTime()
-        + ", createdDate="
-        + createdDate
-        + ", modifiedDate="
-        + modifiedDate
         + '}';
   }
 
@@ -183,9 +155,9 @@ public class ReminderModel {
     ReminderModel that = (ReminderModel) o;
     return id == that.id
         && active == that.active
-        && name.equals(that.name)
+        && recurrenceDelay == that.recurrenceDelay
+        && Objects.equals(name, that.name)
         && startDateTime.equals(that.startDateTime)
-        && Objects.equals(recurrenceDelay, that.recurrenceDelay)
         && recurrenceType == that.recurrenceType
         && Objects.equals(endDateTime, that.endDateTime);
   }
