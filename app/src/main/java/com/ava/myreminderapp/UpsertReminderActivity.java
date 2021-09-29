@@ -221,6 +221,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
   private void initReminderNameComponents() {
     initReminderNameView();
     reminderName.addTextChangedListener(new ReminderNameChangedListener(reminderModel));
+    reminderName.requestFocus();
   }
 
   private void initRecurrenceSwitchListener() {
