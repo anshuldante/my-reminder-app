@@ -1,13 +1,20 @@
 package com.ava.myreminderapp;
 
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+import static android.app.PendingIntent.getActivity;
+import static android.os.SystemClock.elapsedRealtime;
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.HOUR;
 import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MILLISECOND;
 import static java.util.Calendar.MINUTE;
 import static java.util.Calendar.MONTH;
+import static java.util.Calendar.SECOND;
 import static java.util.Calendar.YEAR;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -57,6 +64,8 @@ public class UpsertReminderActivity extends AppCompatActivity {
 
   @Inject ReminderDmlViewModel reminderDmlViewModel;
 
+  private AlarmManager alarmMgr;
+
   // UI Components
   private ConstraintLayout recurrenceDetailsCl;
   private ArrayAdapter<CharSequence> spinnerAdapter;
@@ -75,6 +84,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_upsert_reminder);
+    alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
 
     setupToolbar();
 
@@ -113,7 +123,26 @@ public class UpsertReminderActivity extends AppCompatActivity {
     } else {
       reminderDmlViewModel.addReminder(reminderModel);
     }
+    triggerNotification();
+
     finish();
+  }
+
+  private void triggerNotification() {
+    Intent serviceIntent = new Intent(this, ReminderServiceActivity.class);
+
+    serviceIntent.putExtra(REMINDER_ID, reminderModel.getId());
+    serviceIntent.putExtra(REMINDER_NAME, reminderModel.getName());
+
+    PendingIntent pendingIntent = getActivity(this, 1234, serviceIntent, FLAG_IMMUTABLE);
+
+    Log.i("Reminder Notification Service: ", "Creating Reminder Notification Service Intent");
+    //    alarmMgr.setExact(
+    //        AlarmManager.RTC_WAKEUP, reminderModel.getStartDateTime().getTimeInMillis(),
+    // pendingIntent);
+
+    alarmMgr.set(
+        AlarmManager.ELAPSED_REALTIME_WAKEUP, elapsedRealtime() + 10 * 1000, pendingIntent);
   }
 
   private ReminderModel buildReminderAndSetTitle() {
@@ -214,6 +243,8 @@ public class UpsertReminderActivity extends AppCompatActivity {
       dateTime.set(YEAR, view.getYear());
       dateTime.set(MONTH, view.getMonth());
       dateTime.set(DATE, view.getDayOfMonth());
+      dateTime.set(SECOND, 0);
+      dateTime.set(MILLISECOND, 0);
       runnable.run();
     }
   }
@@ -328,7 +359,8 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   private void initRecurrenceDelayView() {
-    recurrenceDelayEt.setText(Integer.toString(reminderModel.getRecurrenceDelay()));
+    //    recurrenceDelayEt.setText(Integer.toString(reminderModel.getRecurrenceDelay()));
+    recurrenceDelayEt.setText("Delay");
   }
 
   private void initEndDateView() {

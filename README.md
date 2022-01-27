@@ -14,14 +14,14 @@
 * ~~Switch to LiveData from Observable if things don't work as expected.~~
 * ~~Switch to ViewModel for CRUD.~~
 * ~~Switch to ListAdapter.~~
-* ~~Cleanup Add Reminder Activity.~~
+* ~~Cleanup Add Reminder Activity.~~ 
   * ~~Add the buttons on an action bar.~~
   * ~~Clean up the views.~~
 * Change all EditTexts to TextInputEditText.
 * Add capabilities to select ringtones and sounds.
 * Add capability to trigger an alarm.
 * Add background services to trigger alarms as scheduled.
-* Add notifications for upcoming alarms.
+* Add notifications for upcoming alarms. 
 * Add various preferences.
 
 ## TODO (low priority)
