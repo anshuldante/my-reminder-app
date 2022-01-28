@@ -1,7 +1,6 @@
 package com.ava.myreminderapp;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
-import static android.app.PendingIntent.getActivity;
 import static android.os.SystemClock.elapsedRealtime;
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.HOUR;
@@ -41,6 +40,7 @@ import com.ava.myreminderapp.listener.RecurrenceDelayChangedListener;
 import com.ava.myreminderapp.listener.RecurrenceTypeListener;
 import com.ava.myreminderapp.listener.ReminderNameChangedListener;
 import com.ava.myreminderapp.model.ReminderModel;
+import com.ava.myreminderapp.service.ReminderNotificationService;
 
 import java.util.Calendar;
 import java.util.Objects;
@@ -51,6 +51,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class UpsertReminderActivity extends AppCompatActivity {
+  public static final String TAG = "MyReminderApp.UpsertReminderActivity";
 
   public static final String REMINDER_ID = "com.ava.myreminderapp.REMINDER_ID";
   public static final String REMINDER_ACTIVE = "com.ava.myreminderapp.REMINDER_ACTIVE";
@@ -129,14 +130,15 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   private void triggerNotification() {
-    Intent serviceIntent = new Intent(this, ReminderServiceActivity.class);
+    Intent serviceIntent = new Intent(this, ReminderNotificationService.class);
 
     serviceIntent.putExtra(REMINDER_ID, reminderModel.getId());
     serviceIntent.putExtra(REMINDER_NAME, reminderModel.getName());
 
-    PendingIntent pendingIntent = getActivity(this, 1234, serviceIntent, FLAG_IMMUTABLE);
+    PendingIntent pendingIntent =
+        PendingIntent.getService(this, 1234, serviceIntent, FLAG_IMMUTABLE);
 
-    Log.i("Reminder Notification Service: ", "Creating Reminder Notification Service Intent");
+    Log.i(TAG, "Creating Reminder Notification Service Intent");
     //    alarmMgr.setExact(
     //        AlarmManager.RTC_WAKEUP, reminderModel.getStartDateTime().getTimeInMillis(),
     // pendingIntent);
@@ -201,7 +203,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
     startTimePicker.setIs24HourView(true);
     startTimePicker.setOnTimeChangedListener(
         (view, hourOfDay, minute) -> {
-          Log.i("View to Start Time: ", hourOfDay + ":" + minute);
+          Log.i(TAG, "View to Start Time: " + hourOfDay + ":" + minute);
           startDateTime.set(HOUR_OF_DAY, hourOfDay);
           startDateTime.set(MINUTE, minute);
         });
@@ -229,8 +231,13 @@ public class UpsertReminderActivity extends AppCompatActivity {
   private void dateSetListener(
       DatePicker view, Runnable runnable, Calendar dateTime, boolean isStartDate) {
     Log.i(
-        "View to Date: ",
-        view.getDayOfMonth() + "/" + (view.getMonth() + 1) + "/" + view.getYear());
+        TAG,
+        "View to Date: "
+            + view.getDayOfMonth()
+            + "/"
+            + (view.getMonth() + 1)
+            + "/"
+            + view.getYear());
 
     currentTime.setTimeInMillis(System.currentTimeMillis());
 
@@ -305,7 +312,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   private void timeSetListener(TimePicker view, Calendar dateTime, Runnable runnable) {
-    Log.i("View to Time: ", dateTime.get(HOUR) + ":" + dateTime.get(MINUTE));
+    Log.i(TAG, "View to Time: " + dateTime.get(HOUR) + ":" + dateTime.get(MINUTE));
 
     currentTime.setTimeInMillis(System.currentTimeMillis());
     int hour = view.getHour();
@@ -322,7 +329,9 @@ public class UpsertReminderActivity extends AppCompatActivity {
 
   private void initStartTimeView() {
     Calendar startDateTime = reminderModel.getStartDateTime();
-    Log.i("Start time to view: ", startDateTime.get(HOUR_OF_DAY) + ":" + startDateTime.get(MINUTE));
+    Log.i(
+        TAG,
+        "Start time to view: " + startDateTime.get(HOUR_OF_DAY) + ":" + startDateTime.get(MINUTE));
     startTimePicker.setHour(startDateTime.get(HOUR_OF_DAY));
     startTimePicker.setMinute(startDateTime.get(MINUTE));
   }
@@ -330,8 +339,9 @@ public class UpsertReminderActivity extends AppCompatActivity {
   private void initStartDateView() {
     Calendar startDateTime = reminderModel.getStartDateTime();
     Log.i(
-        "Start Date to view: ",
-        startDateTime.get(DATE)
+        TAG,
+        "Start Date to view: "
+            + startDateTime.get(DATE)
             + "/"
             + (startDateTime.get(MONTH) + 1)
             + "/"
@@ -354,7 +364,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
 
   private void initRecurrenceTypeView() {
     String recurrenceType = reminderModel.getRecurrenceType().getValue();
-    Log.i("Recurrence Type to View: ", recurrenceType);
+    Log.i(TAG, "Recurrence Type to View: " + recurrenceType);
     recurrenceTypeSpinner.setSelection(spinnerAdapter.getPosition(recurrenceType));
   }
 
@@ -366,8 +376,13 @@ public class UpsertReminderActivity extends AppCompatActivity {
   private void initEndDateView() {
     Calendar dateTime = reminderModel.getEndDateTime();
     Log.i(
-        "End Date to view: ",
-        dateTime.get(DATE) + "/" + (dateTime.get(MONTH) + 1) + "/" + dateTime.get(YEAR));
+        TAG,
+        "End Date to view: "
+            + dateTime.get(DATE)
+            + "/"
+            + (dateTime.get(MONTH) + 1)
+            + "/"
+            + dateTime.get(YEAR));
     endDateTextView.setText(
         getString(
             R.string.ara_reminder_end_date,
@@ -378,7 +393,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
 
   private void initEndTimeView() {
     Calendar dateTime = reminderModel.getEndDateTime();
-    Log.i("End time to view: ", dateTime.get(HOUR_OF_DAY) + ":" + dateTime.get(MINUTE));
+    Log.i(TAG, "End time to view: " + dateTime.get(HOUR_OF_DAY) + ":" + dateTime.get(MINUTE));
     endTimeTextView.setText(
         getString(R.string.ara_reminder_end_time, dateTime.get(HOUR_OF_DAY), dateTime.get(MINUTE)));
   }

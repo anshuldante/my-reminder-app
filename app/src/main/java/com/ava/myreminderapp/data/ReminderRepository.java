@@ -15,6 +15,8 @@ public class ReminderRepository {
   private final ExecutorService reminderDaoExecutor;
   private final LiveData<List<ReminderModel>> getAllObservable;
 
+  private static final String TAG = "MyReminderApp.ReminderRepository: ";
+
   public ReminderRepository(ReminderDao reminderDao, ExecutorService reminderDaoExecutor) {
     this.reminderDao = reminderDao;
     this.reminderDaoExecutor = reminderDaoExecutor;
@@ -26,9 +28,9 @@ public class ReminderRepository {
         () -> {
           try {
             reminderDao.add(model);
-            Log.i("ReminderRepository: ", "Added reminder: " + model);
+            Log.i(TAG, "Added reminder: " + model);
           } catch (Exception e) {
-            Log.e("ReminderRepository: ", "Error while adding the reminder: " + model, e);
+            Log.e(TAG, "Error while adding the reminder: " + model, e);
           }
         });
   }
@@ -38,9 +40,9 @@ public class ReminderRepository {
         () -> {
           try {
             reminderDao.deleteAll();
-            Log.i("Reminders: ", "Deleted All reminders!");
+            Log.i(TAG, "Deleted All reminders!");
           } catch (Exception e) {
-            Log.e("Reminders: ", "Exception while deleting all reminders", e);
+            Log.e(TAG, "Exception while deleting all reminders", e);
           }
         });
   }
@@ -50,9 +52,9 @@ public class ReminderRepository {
         () -> {
           try {
             reminderDao.delete(model);
-            Log.i("Reminders: ", "Deleted reminder: " + model.getName());
+            Log.i(TAG, "Deleted reminder: " + model.getName());
           } catch (Exception e) {
-            Log.e("Reminders: ", "Exception while deleting reminder: " + model.getName(), e);
+            Log.e(TAG, "Exception while deleting reminder: " + model.getName(), e);
           }
         });
   }
@@ -62,12 +64,10 @@ public class ReminderRepository {
         () -> {
           try {
             reminderDao.updateStatus(reminder.getId(), isActive);
-            Log.i(
-                "Reminders: ",
-                "Updated reminder: " + reminder.getName() + "'s status to: " + isActive);
+            Log.i(TAG, "Updated reminder: " + reminder.getName() + "'s status to: " + isActive);
           } catch (Exception e) {
             Log.e(
-                "Reminders: ",
+                TAG,
                 "Exception while Updating reminder: "
                     + reminder.getName()
                     + "'s status to: "
@@ -81,9 +81,9 @@ public class ReminderRepository {
         () -> {
           try {
             reminderDao.update(model);
-            Log.i("ReminderRepository: ", "Updated reminder: " + model);
+            Log.i(TAG, "Updated reminder: " + model);
           } catch (Exception e) {
-            Log.e("ReminderRepository: ", "Error while updating the reminder: " + model, e);
+            Log.e(TAG, "Error while updating the reminder: " + model, e);
           }
         });
   }

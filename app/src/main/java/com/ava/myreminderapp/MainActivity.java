@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
   private RecyclerView reminderRecyclerView;
   private TextView emptyReminderList;
 
+  public static final String TAG = "MyReminderApp.MainActivity";
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         .observe(
             this,
             reminders -> {
-              Log.i("Reminders: ", "All reminders: " + reminders.toString());
+              Log.i(TAG, "All reminders: " + reminders.toString());
               runOnUiThread(
                   () -> {
                     if (reminders.size() == 0) {

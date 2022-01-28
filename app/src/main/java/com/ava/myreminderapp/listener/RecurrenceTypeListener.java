@@ -8,6 +8,8 @@ import com.ava.myreminderapp.model.RecurrenceType;
 import com.ava.myreminderapp.model.ReminderModel;
 
 public class RecurrenceTypeListener implements AdapterView.OnItemSelectedListener {
+  public static final String TAG = "MyReminderApp.RecurrenceTypeListener";
+
   private final ReminderModel reminder;
 
   public RecurrenceTypeListener(ReminderModel reminder) {
@@ -17,8 +19,12 @@ public class RecurrenceTypeListener implements AdapterView.OnItemSelectedListene
   @Override
   public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
     Log.i(
-        "Recurrence Type selected: ",
-        "position: " + position + " value: " + parent.getItemAtPosition(position).toString());
+        TAG,
+        "Recurrence Type selected: "
+            + "position: "
+            + position
+            + " value: "
+            + parent.getItemAtPosition(position).toString());
     reminder.setRecurrenceType(
         RecurrenceType.getRecurrenceTypeByValue((String) parent.getItemAtPosition(position)));
   }

@@ -33,7 +33,13 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.ReminderNotificationService" />
+        <service
+            android:name=".service.MediaStopperService"
+            android:enabled="true" />
+
+        <service
+            android:name=".service.ReminderNotificationService"
+            android:enabled="true" />
     </application>
 
 </manifest>

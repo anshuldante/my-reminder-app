@@ -58,7 +58,9 @@
     <string name="ria_delete_dialog_cancel">Cancel</string>
     <string name="era_title_add_reminder">Add Reminder</string>
     <string name="era_title_edit_reminder">Edit Reminder</string>
-    <string name="ara_button_close">close</string>
+    <string name="ara_button_close">Close</string>
     <string name="ticker_text">Trial Ticker Text</string>
+    <string name="snooze">Snooze</string>
+    <string name="dismiss">Dismiss</string>
 
 </resources>

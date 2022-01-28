@@ -7,6 +7,8 @@ import android.util.Log;
 import com.ava.myreminderapp.model.ReminderModel;
 
 public class ReminderNameChangedListener implements TextWatcher {
+  public static final String TAG = "MyReminderApp.ReminderNameChangedListener";
+
   private final ReminderModel reminder;
 
   public ReminderNameChangedListener(ReminderModel reminder) {
@@ -23,7 +25,7 @@ public class ReminderNameChangedListener implements TextWatcher {
   public void afterTextChanged(Editable s) {
     String name = null;
     if (s != null) {
-      Log.i("Edit Text to name: ", s.toString());
+      Log.i(TAG, "Edit Text to name: " + s);
       name = s.toString().trim();
     }
     reminder.setName(name);
