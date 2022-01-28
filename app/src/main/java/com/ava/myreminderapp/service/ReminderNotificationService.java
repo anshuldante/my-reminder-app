@@ -21,11 +21,13 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.ava.myreminderapp.MainActivity;
 import com.ava.myreminderapp.R;
 
 public class ReminderNotificationService extends Service {
+  private NotificationManagerCompat notificationManager;
   private MediaPlayer mediaPlayer;
   private Vibrator vibrator;
 
@@ -35,27 +37,16 @@ public class ReminderNotificationService extends Service {
 
     Log.i("ReminderNotificationService", "Inside onCreate");
 
+    vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    notificationManager = NotificationManagerCompat.from(this);
     mediaPlayer = MediaPlayer.create(this, R.raw.alarm);
     mediaPlayer.setLooping(true);
-
-    vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
   }
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-
     Log.i("ReminderNotificationService", "Inside onStart");
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      NotificationChannel channel =
-          new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE);
-      channel.setLightColor(Color.BLUE);
-      channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-      NotificationManager manager =
-          (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-      assert manager != null;
-      manager.createNotificationChannel(channel);
-    }
+    createChannel();
 
     Intent notificationIntent = new Intent(this, MainActivity.class);
 
@@ -69,7 +60,7 @@ public class ReminderNotificationService extends Service {
             .setContentTitle(title)
             .setContentText("Ring Ring .. Ring Ring")
             .setSmallIcon(R.drawable.ic_alarm)
-            .setContentIntent(pendingIntent)
+            //            .setContentIntent(pendingIntent)
             .setTicker(getText(R.string.ticker_text))
             .build();
 
@@ -80,8 +71,7 @@ public class ReminderNotificationService extends Service {
 
     Log.i("ReminderNotificationService", "Starting notification");
 
-    startForeground(1, notification);
-
+    notificationManager.notify(1, notification);
     return START_STICKY;
   }
 
@@ -99,5 +89,17 @@ public class ReminderNotificationService extends Service {
   @Override
   public IBinder onBind(Intent intent) {
     return null;
+  }
+
+  private void createChannel() {
+    Log.i("ReminderNotificationService", "Creating Channel if needed");
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      NotificationChannel channel =
+          new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE);
+      channel.setLightColor(Color.BLUE);
+      channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+      notificationManager.createNotificationChannel(channel);
+    }
   }
 }
