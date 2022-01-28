@@ -86,16 +86,15 @@ public class ReminderNotificationService extends Service {
   private Notification buildNotification() {
     createNotificationChannel();
     NotificationCompat.Builder builder = createNotification();
-    attachActivityIntent(builder);
     attachSnoozeAction(builder);
-    attachDismissAction(builder);
+    attachDismissActions(builder);
 
     Log.i(TAG, "Notification Built for ID: " + notificationId);
 
     return builder.build();
   }
 
-  private void attachDismissAction(NotificationCompat.Builder builder) {
+  private void attachDismissActions(NotificationCompat.Builder builder) {
     {
       Intent dismissIntent = new Intent(this, MediaStopperService.class);
       dismissIntent.setAction(ACTION_DISMISS);
@@ -106,6 +105,7 @@ public class ReminderNotificationService extends Service {
           PendingIntent.getService(this, 0, dismissIntent, FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
       builder.addAction(
           R.drawable.ic_baseline_cancel_24, getString(R.string.dismiss), dismissPendingIntent);
+      builder.setContentIntent(dismissPendingIntent);
     }
   }
 
@@ -119,17 +119,6 @@ public class ReminderNotificationService extends Service {
         PendingIntent.getBroadcast(this, 0, snoozeIntent, FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
     builder.addAction(
         R.drawable.ic_baseline_snooze_24, getString(R.string.snooze), snoozePendingIntent);
-  }
-
-  private void attachActivityIntent(NotificationCompat.Builder builder) {
-    Intent intent = new Intent(this, MediaStopperService.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
-    }
-    PendingIntent pendingIntent =
-        PendingIntent.getActivity(this, 0, intent, FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
-    builder.setContentIntent(pendingIntent);
   }
 
   private NotificationCompat.Builder createNotification() {
