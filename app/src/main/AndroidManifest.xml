@@ -14,9 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyReminderApp">
         <activity
-            android:name=".ReminderServiceActivity"
-            android:exported="true" />
-        <activity
             android:name=".UpsertReminderActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
