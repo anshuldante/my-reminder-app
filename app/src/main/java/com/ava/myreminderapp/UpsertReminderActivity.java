@@ -1,7 +1,6 @@
 package com.ava.myreminderapp;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
-import static android.os.SystemClock.elapsedRealtime;
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.HOUR;
 import static java.util.Calendar.HOUR_OF_DAY;
@@ -43,6 +42,7 @@ import com.ava.myreminderapp.model.ReminderModel;
 import com.ava.myreminderapp.service.ReminderNotificationService;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -139,12 +139,11 @@ public class UpsertReminderActivity extends AppCompatActivity {
         PendingIntent.getService(this, 1234, serviceIntent, FLAG_IMMUTABLE);
 
     Log.i(TAG, "Creating Reminder Notification Service Intent");
-    //    alarmMgr.setExact(
-    //        AlarmManager.RTC_WAKEUP, reminderModel.getStartDateTime().getTimeInMillis(),
-    // pendingIntent);
+    Log.i(TAG, "Current Time: " + new Date().toString());
+    Log.i(TAG, "Alarm Time: " + reminderModel.getStartDateTime().getTime().toString());
 
-    alarmMgr.set(
-        AlarmManager.ELAPSED_REALTIME_WAKEUP, elapsedRealtime() + 10 * 1000, pendingIntent);
+    alarmMgr.setExactAndAllowWhileIdle(
+        AlarmManager.RTC_WAKEUP, reminderModel.getStartDateTime().getTimeInMillis(), pendingIntent);
   }
 
   private ReminderModel buildReminderAndSetTitle() {

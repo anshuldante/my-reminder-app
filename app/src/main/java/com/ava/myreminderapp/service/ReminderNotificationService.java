@@ -29,6 +29,8 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.ava.myreminderapp.R;
 
+import java.util.Date;
+
 public class ReminderNotificationService extends Service {
   private static final String ACTION_SNOOZE = "Snooze";
   private static final String ACTION_DISMISS = "Dismiss";
@@ -58,8 +60,9 @@ public class ReminderNotificationService extends Service {
     notificationName = intent.getStringExtra(REMINDER_NAME);
     Log.i(TAG, "Inside onStartCommand, creating a notification for ID: " + notificationId);
 
-    startForeground(notificationId, buildNotification());
+    Log.i(TAG, "Starting alarm at: " + new Date().toString());
 
+    startForeground(notificationId, buildNotification());
     mediaPlayer.start();
     long[] pattern = {0, 100, 1000};
     vibrator.vibrate(pattern, 0);
