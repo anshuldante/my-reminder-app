@@ -32,11 +32,11 @@
         </activity>
 
         <service
-            android:name=".service.MediaStopperService"
+            android:name=".service.NotificationStopperService"
             android:enabled="true" />
 
         <service
-            android:name=".service.ReminderNotificationService"
+            android:name=".service.NotificationStarterService"
             android:enabled="true" />
     </application>
 

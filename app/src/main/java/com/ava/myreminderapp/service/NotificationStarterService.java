@@ -31,11 +31,11 @@ import com.ava.myreminderapp.R;
 
 import java.util.Date;
 
-public class ReminderNotificationService extends Service {
+public class NotificationStarterService extends Service {
   private static final String ACTION_SNOOZE = "Snooze";
   private static final String ACTION_DISMISS = "Dismiss";
 
-  public static final String TAG = "MyReminderApp.ReminderNotificationService";
+  public static final String TAG = "MyReminderApp.NotificationStarterService";
 
   private MediaPlayer mediaPlayer;
   private Vibrator vibrator;
@@ -60,9 +60,10 @@ public class ReminderNotificationService extends Service {
     notificationName = intent.getStringExtra(REMINDER_NAME);
     Log.i(TAG, "Inside onStartCommand, creating a notification for ID: " + notificationId);
 
-    Log.i(TAG, "Starting alarm at: " + new Date().toString());
+    Log.i(TAG, "Starting alarm at: " + new Date());
 
-    startForeground(notificationId, buildNotification());
+    // Because of the manually triggered flow, ID is always zero, hence hard-coding a non-zero value
+    startForeground(33, buildNotification());
     mediaPlayer.start();
     long[] pattern = {0, 100, 1000};
     vibrator.vibrate(pattern, 0);
@@ -99,7 +100,7 @@ public class ReminderNotificationService extends Service {
 
   private void attachDismissActions(NotificationCompat.Builder builder) {
     {
-      Intent dismissIntent = new Intent(this, MediaStopperService.class);
+      Intent dismissIntent = new Intent(this, NotificationStopperService.class);
       dismissIntent.setAction(ACTION_DISMISS);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         dismissIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
@@ -113,7 +114,7 @@ public class ReminderNotificationService extends Service {
   }
 
   private void attachSnoozeAction(NotificationCompat.Builder builder) {
-    Intent snoozeIntent = new Intent(this, MediaStopperService.class);
+    Intent snoozeIntent = new Intent(this, NotificationStopperService.class);
     snoozeIntent.setAction(ACTION_SNOOZE);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       snoozeIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);

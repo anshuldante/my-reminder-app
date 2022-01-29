@@ -39,7 +39,7 @@ import com.ava.myreminderapp.listener.RecurrenceDelayChangedListener;
 import com.ava.myreminderapp.listener.RecurrenceTypeListener;
 import com.ava.myreminderapp.listener.ReminderNameChangedListener;
 import com.ava.myreminderapp.model.ReminderModel;
-import com.ava.myreminderapp.service.ReminderNotificationService;
+import com.ava.myreminderapp.service.NotificationStarterService;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -68,12 +68,12 @@ public class UpsertReminderActivity extends AppCompatActivity {
   private AlarmManager alarmMgr;
 
   // UI Components
-  private ConstraintLayout recurrenceDetailsCl;
   private ArrayAdapter<CharSequence> spinnerAdapter;
-  private ReminderModel reminderModel;
+  private ConstraintLayout recurrenceDetailsCl;
   private Spinner recurrenceTypeSpinner;
   private SwitchCompat recurrenceSwitch;
   private ImageView startDateImageView;
+  private ReminderModel reminderModel;
   private EditText recurrenceDelayEt;
   private TimePicker startTimePicker;
   private TextView startDateTextView;
@@ -130,7 +130,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   private void triggerNotification() {
-    Intent serviceIntent = new Intent(this, ReminderNotificationService.class);
+    Intent serviceIntent = new Intent(this, NotificationStarterService.class);
 
     serviceIntent.putExtra(REMINDER_ID, reminderModel.getId());
     serviceIntent.putExtra(REMINDER_NAME, reminderModel.getName());
@@ -139,8 +139,8 @@ public class UpsertReminderActivity extends AppCompatActivity {
         PendingIntent.getService(this, 1234, serviceIntent, FLAG_IMMUTABLE);
 
     Log.i(TAG, "Creating Reminder Notification Service Intent");
-    Log.i(TAG, "Current Time: " + new Date().toString());
-    Log.i(TAG, "Alarm Time: " + reminderModel.getStartDateTime().getTime().toString());
+    Log.i(TAG, "Current Time: " + new Date());
+    Log.i(TAG, "Alarm Time: " + reminderModel.getStartDateTime().getTime());
 
     alarmMgr.setExactAndAllowWhileIdle(
         AlarmManager.RTC_WAKEUP, reminderModel.getStartDateTime().getTimeInMillis(), pendingIntent);
@@ -368,8 +368,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   private void initRecurrenceDelayView() {
-    //    recurrenceDelayEt.setText(Integer.toString(reminderModel.getRecurrenceDelay()));
-    recurrenceDelayEt.setText("Delay");
+    recurrenceDelayEt.setText(Integer.toString(reminderModel.getRecurrenceDelay()));
   }
 
   private void initEndDateView() {
