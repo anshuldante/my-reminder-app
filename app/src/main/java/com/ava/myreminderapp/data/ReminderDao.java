@@ -15,7 +15,7 @@ import java.util.List;
 public interface ReminderDao {
 
   @Insert
-  long add(ReminderModel model);
+  void add(ReminderModel model);
 
   @Query("Delete from reminders")
   void deleteAll();
@@ -29,7 +29,7 @@ public interface ReminderDao {
   @Update
   void update(ReminderModel model);
 
-  @Query("SELECT * FROM reminders order by name")
+  @Query("SELECT * FROM reminders order by start_date desc")
   LiveData<List<ReminderModel>> getAll();
 
   @Query("SELECT * FROM reminders where id = :id")

@@ -13,14 +13,14 @@ public class ReminderRepository {
 
   private final ReminderDao reminderDao;
   private final ExecutorService reminderDaoExecutor;
-  private final LiveData<List<ReminderModel>> getAllObservable;
+  private final LiveData<List<ReminderModel>> getAllLiveData;
 
   private static final String TAG = "MyReminderApp.ReminderRepository: ";
 
   public ReminderRepository(ReminderDao reminderDao, ExecutorService reminderDaoExecutor) {
     this.reminderDao = reminderDao;
     this.reminderDaoExecutor = reminderDaoExecutor;
-    this.getAllObservable = reminderDao.getAll();
+    this.getAllLiveData = reminderDao.getAll();
   }
 
   public void add(ReminderModel model) {
@@ -89,6 +89,6 @@ public class ReminderRepository {
   }
 
   public LiveData<List<ReminderModel>> getAll() {
-    return getAllObservable;
+    return getAllLiveData;
   }
 }

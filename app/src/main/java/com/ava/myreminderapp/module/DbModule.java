@@ -5,10 +5,13 @@ import android.content.Context;
 import androidx.room.Room;
 
 import com.ava.myreminderapp.data.GetAllRemindersViewModel;
+import com.ava.myreminderapp.data.InstanceDao;
+import com.ava.myreminderapp.data.InstanceRepository;
 import com.ava.myreminderapp.data.ReminderDao;
 import com.ava.myreminderapp.data.ReminderDmlViewModel;
 import com.ava.myreminderapp.data.ReminderRepository;
 import com.ava.myreminderapp.data.RemindersDb;
+import com.ava.myreminderapp.service.ReminderManager;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,7 +32,14 @@ public class DbModule {
   @Provides
   @Singleton
   @Named("reminderDaoExecutor")
-  public ExecutorService getReminderDaoExecutorService() {
+  public ExecutorService getReminderDaoExecutor() {
+    return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+  }
+
+  @Provides
+  @Singleton
+  @Named("instanceDaoExecutor")
+  public ExecutorService getInstanceDaoExecutor() {
     return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
   }
 
@@ -47,20 +57,39 @@ public class DbModule {
 
   @Provides
   @Singleton
+  public InstanceDao getInstanceDao(RemindersDb remindersDb) {
+    return remindersDb.reminderInstanceDao();
+  }
+
+  @Provides
+  @Singleton
   public ReminderRepository getReminderRepository(
-      ReminderDao reminderDao, @Named("reminderDaoExecutor") ExecutorService reminderDaoExecutor) {
-    return new ReminderRepository(reminderDao, reminderDaoExecutor);
+      ReminderDao dao, @Named("reminderDaoExecutor") ExecutorService executor) {
+    return new ReminderRepository(dao, executor);
   }
 
   @Provides
   @Singleton
-  public GetAllRemindersViewModel getAllRemindersViewModel(ReminderRepository reminderRepository) {
-    return new GetAllRemindersViewModel(reminderRepository);
+  public InstanceRepository getInstanceRepository(
+      InstanceDao dao, @Named("instanceDaoExecutor") ExecutorService executor) {
+    return new InstanceRepository(dao, executor);
   }
 
   @Provides
   @Singleton
-  public ReminderDmlViewModel reminderDmlViewModel(ReminderRepository reminderRepository) {
-    return new ReminderDmlViewModel(reminderRepository);
+  public GetAllRemindersViewModel getAllRemindersViewModel(ReminderRepository repository) {
+    return new GetAllRemindersViewModel(repository);
+  }
+
+  @Provides
+  @Singleton
+  public ReminderDmlViewModel getReminderDmlViewModel(ReminderRepository repository) {
+    return new ReminderDmlViewModel(repository);
+  }
+
+  @Provides
+  @Singleton
+  public ReminderManager getReminderManager(InstanceRepository repository) {
+    return new ReminderManager(repository);
   }
 }

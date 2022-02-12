@@ -16,12 +16,10 @@ public class NotificationStopperService extends Service {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-
-    Log.i(TAG, "NotificationStopperService starting up");
-
-    Log.i(TAG, "NotificationStopperService trying to kill the notification");
-    Intent intentService = new Intent(getApplicationContext(), NotificationStarterService.class);
-    getApplicationContext().stopService(intentService);
+    Log.i(TAG, "Starting up");
+    Log.i(TAG, "Trying to kill the notification");
+    Intent serviceIntent = new Intent(getApplicationContext(), NotificationStarterService.class);
+    getApplicationContext().stopService(serviceIntent);
     return super.onStartCommand(intent, flags, startId);
   }
 }
