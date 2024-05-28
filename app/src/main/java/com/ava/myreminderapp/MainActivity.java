@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
               Log.i(TAG, "All reminders: " + reminders.toString());
               runOnUiThread(
                   () -> {
-                    if (reminders.size() == 0) {
+                    if (reminders.isEmpty()) {
                       reminderRecyclerView.setVisibility(View.GONE);
                       emptyReminderList.setVisibility(View.VISIBLE);
                     } else {
