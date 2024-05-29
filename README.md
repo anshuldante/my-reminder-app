@@ -23,6 +23,7 @@
 * Add background services to trigger alarms as scheduled.
 * Add notifications for upcoming alarms. 
 * Add various preferences.
+* Add an option to create a daily TODO list that shows up early in the morning or as soon as the phone internet is up, or maybe some other selectable conditions.
 
 ## TODO (low priority)
 

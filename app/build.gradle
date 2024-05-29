@@ -5,13 +5,13 @@ plugins {
 
 android {
     namespace "com.ava.myreminderapp"
-    compileSdkVersion 34
-    buildToolsVersion "34.0.0"
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.ava.myreminderapp"
-        minSdkVersion 23
-        targetSdkVersion 31
+        buildToolsVersion "33.0.0"
+        minSdkVersion 33
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
