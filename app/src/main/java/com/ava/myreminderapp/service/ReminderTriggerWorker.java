@@ -8,4 +8,5 @@ package com.ava.myreminderapp.service;
  * Needs to be called whenever a reminder is triggered. Needs to be called whenever the phone boots
  * up.
  */
-public class ReminderTriggerWorker {}
+public class ReminderTriggerWorker {
+}

@@ -8,7 +8,9 @@ import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_RECURRENCE_D
 import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_RECURRENCE_TYPE;
 import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_START_TIME;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -20,6 +22,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,19 +40,24 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
-  @Inject ReminderDmlViewModel reminderDml;
-  @Inject GetAllRemindersViewModel getAllReminders;
+  @Inject
+  ReminderDmlViewModel reminderDml;
+  @Inject
+  GetAllRemindersViewModel getAllReminders;
 
   private ReminderItemAdapter reminderItemAdapter;
   private RecyclerView reminderRecyclerView;
   private TextView emptyReminderList;
 
   public static final String TAG = "MyReminderApp.MainActivity";
+  private static final int REQUEST_CODE_SCHEDULE_EXACT_ALARM = 1001;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    checkExactAlarmPermission();
 
     Toolbar toolbar = findViewById(R.id.am_tb);
     toolbar.setTitle(R.string.main_activity_title);
@@ -83,23 +92,23 @@ public class MainActivity extends AppCompatActivity {
 
   private void attachItemClickHelper() {
     new ItemTouchHelper(
-            new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-              @Override
-              public boolean onMove(
-                  @NonNull RecyclerView recyclerView,
-                  @NonNull RecyclerView.ViewHolder viewHolder,
-                  @NonNull RecyclerView.ViewHolder target) {
-                return false;
-              }
+        new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+          @Override
+          public boolean onMove(
+              @NonNull RecyclerView recyclerView,
+              @NonNull RecyclerView.ViewHolder viewHolder,
+              @NonNull RecyclerView.ViewHolder target) {
+            return false;
+          }
 
-              @Override
-              public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                reminderDml.deleteReminder(
-                    reminderItemAdapter.getReminderAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(MainActivity.this, "Deleted all reminders", Toast.LENGTH_SHORT)
-                    .show();
-              }
-            })
+          @Override
+          public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            reminderDml.deleteReminder(
+                reminderItemAdapter.getReminderAt(viewHolder.getAdapterPosition()));
+            Toast.makeText(MainActivity.this, "Deleted all reminders", Toast.LENGTH_SHORT)
+                .show();
+          }
+        })
         .attachToRecyclerView(reminderRecyclerView);
   }
 
@@ -122,6 +131,19 @@ public class MainActivity extends AppCompatActivity {
                     reminderItemAdapter.submitList(reminders);
                   });
             });
+  }
+
+
+  private void checkExactAlarmPermission() {
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.SCHEDULE_EXACT_ALARM)
+        != PackageManager.PERMISSION_GRANTED) {
+      // Permission is not granted, request it
+      ActivityCompat.requestPermissions(
+          this,
+          new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM},
+          REQUEST_CODE_SCHEDULE_EXACT_ALARM
+      );
+    }
   }
 
   @Override

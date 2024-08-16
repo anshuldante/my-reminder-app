@@ -20,7 +20,9 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -49,7 +51,8 @@ public class NotificationStarterService extends Service {
     Log.i(TAG, "Inside onCreate");
 
     notificationManager = NotificationManagerCompat.from(this);
-    vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    vibrator = ((VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE)).getDefaultVibrator();
+
     mediaPlayer = MediaPlayer.create(this, R.raw.alarm);
     mediaPlayer.setLooping(true);
   }
@@ -65,9 +68,8 @@ public class NotificationStarterService extends Service {
     // Because of the manually triggered flow, ID is always zero, hence hard-coding a non-zero value
     startForeground(33, buildNotification());
     mediaPlayer.start();
-    long[] pattern = {0, 100, 1000};
-    vibrator.vibrate(pattern, 0);
 
+    vibrateWithPattern();
     return START_STICKY;
   }
 
@@ -147,6 +149,16 @@ public class NotificationStarterService extends Service {
       channel.setLightColor(Color.BLUE);
       channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
       notificationManager.createNotificationChannel(channel);
+    }
+  }
+
+  private void vibrateWithPattern() {
+    if (vibrator != null && vibrator.hasVibrator()) {
+      // Create a vibration pattern (ON for 0.5s, OFF for 0.3s, ON for 0.5s)
+      long[] pattern = {0, 500, 300, 500};
+
+      // Vibrate using the pattern
+      vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1)); // Pass -1 to play the pattern once
     }
   }
 }

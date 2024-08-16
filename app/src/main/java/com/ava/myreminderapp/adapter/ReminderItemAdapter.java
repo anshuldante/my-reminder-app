@@ -58,7 +58,7 @@ public class ReminderItemAdapter
         context.getString(
             R.string.ria_reminder_time,
             startDateTime.get(Calendar.HOUR_OF_DAY),
-            startDateTime.get(Calendar.HOUR_OF_DAY)));
+            startDateTime.get(Calendar.MINUTE)));
 
     holder.reminderDate.setText(
         context.getString(

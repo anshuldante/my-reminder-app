@@ -30,5 +30,6 @@ public class RecurrenceTypeListener implements AdapterView.OnItemSelectedListene
   }
 
   @Override
-  public void onNothingSelected(AdapterView<?> parent) {}
+  public void onNothingSelected(AdapterView<?> parent) {
+  }
 }

@@ -9,6 +9,12 @@
 * [Testing with Doze and App Standby](https://developer.android.com/training/monitoring-device-state/doze-standby#testing_doze_and_app_standby)
 * [Creating a simple alarm app](https://learntodroid.com/how-to-create-a-simple-alarm-clock-app-in-android/)
 
+## Help Needed
+
+- With project structure and modularisation
+- With screen appearance
+- With screen design
+
 ## TODO (high priority)
 
 * ~~Switch to LiveData from Observable if things don't work as expected.~~
@@ -29,7 +35,7 @@
 
 * Use [this](https://developer.android.com/guide/topics/ui/controls/pickers#java) to convert the date and time pickers to fragments.
 * Use [this](https://developer.android.com/guide/topics/ui/dialogs) to convert dialog to DialogFragment.
-* Scheduler and executer cleanup if needed.
+* Scheduler and executor cleanup if needed.
 * Look into ,TextInputLayout, SnackBars, TabLayout (for tabs), NavigationView (for sliding screens), Coordinator layout.
 * AppBarLayout, BottomAppBar
 * Delete All menu item in general long-click will allow selection and deletion.
