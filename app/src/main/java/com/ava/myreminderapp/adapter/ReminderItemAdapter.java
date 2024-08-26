@@ -39,9 +39,7 @@ public class ReminderItemAdapter
   @NonNull
   @Override
   public ReminderItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    View view =
-        LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_item_reminder, parent, false);
-    return new ReminderItemViewHolder(view);
+    return new ReminderItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_item_reminder, parent, false));
   }
 
   @Override

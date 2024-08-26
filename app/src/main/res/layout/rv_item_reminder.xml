@@ -6,7 +6,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/standard_padding">
 
         <View
             android:id="@+id/rir_hz_divider_top"
@@ -44,6 +45,7 @@
             android:id="@+id/rir_sw_active"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/switch_content_description"
             app:layout_constraintBottom_toTopOf="@+id/rir_tv_reminder_date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

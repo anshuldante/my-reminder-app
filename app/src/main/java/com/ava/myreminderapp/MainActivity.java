@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -57,14 +56,11 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    checkExactAlarmPermission();
+    checkPermissions();
 
-    Toolbar toolbar = findViewById(R.id.am_tb);
-    toolbar.setTitle(R.string.main_activity_title);
-    setSupportActionBar(toolbar);
+    setSupportActionBar(findViewById(R.id.am_tb));
 
-    FloatingActionButton addReminderButton = findViewById(R.id.am_fab_add_reminder);
-    addReminderButton.setOnClickListener(view -> startUpsertReminderActivity(null));
+    findViewById(R.id.am_fab_add_reminder).setOnClickListener(view -> startUpsertReminderActivity(null));
 
     emptyReminderList = findViewById(R.id.am_tv_no_reminders);
 
@@ -133,11 +129,13 @@ public class MainActivity extends AppCompatActivity {
             });
   }
 
+  private void checkPermissions() {
+    checkExactAlarmPermission();
+  }
 
   private void checkExactAlarmPermission() {
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.SCHEDULE_EXACT_ALARM)
         != PackageManager.PERMISSION_GRANTED) {
-      // Permission is not granted, request it
       ActivityCompat.requestPermissions(
           this,
           new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM},

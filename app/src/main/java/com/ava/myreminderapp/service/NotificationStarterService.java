@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -104,9 +103,7 @@ public class NotificationStarterService extends Service {
     {
       Intent dismissIntent = new Intent(this, NotificationStopperService.class);
       dismissIntent.setAction(ACTION_DISMISS);
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        dismissIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
-      }
+      dismissIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
       PendingIntent dismissPendingIntent =
           PendingIntent.getService(this, 0, dismissIntent, FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
       builder.addAction(
@@ -118,9 +115,7 @@ public class NotificationStarterService extends Service {
   private void attachSnoozeAction(NotificationCompat.Builder builder) {
     Intent snoozeIntent = new Intent(this, NotificationStopperService.class);
     snoozeIntent.setAction(ACTION_SNOOZE);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      snoozeIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
-    }
+    snoozeIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
     PendingIntent snoozePendingIntent =
         PendingIntent.getBroadcast(this, 0, snoozeIntent, FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
     builder.addAction(
@@ -140,24 +135,17 @@ public class NotificationStarterService extends Service {
   }
 
   private void createNotificationChannel() {
-    Log.i(TAG, "Creating Channel if needed");
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      NotificationChannel channel =
-          new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
-      channel.setDescription(CHANNEL_DESCRIPTION);
-      channel.setLightColor(Color.BLUE);
-      channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-      notificationManager.createNotificationChannel(channel);
-    }
+    NotificationChannel channel =
+        new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+    channel.setDescription(CHANNEL_DESCRIPTION);
+    channel.setLightColor(Color.BLUE);
+    channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+    notificationManager.createNotificationChannel(channel);
   }
 
   private void vibrateWithPattern() {
     if (vibrator != null && vibrator.hasVibrator()) {
-      // Create a vibration pattern (ON for 0.5s, OFF for 0.3s, ON for 0.5s)
       long[] pattern = {0, 500, 300, 500};
-
-      // Vibrate using the pattern
       vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1)); // Pass -1 to play the pattern once
     }
   }

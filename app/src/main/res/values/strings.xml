@@ -62,5 +62,6 @@
     <string name="ticker_text">Trial Ticker Text</string>
     <string name="snooze">Snooze</string>
     <string name="dismiss">Dismiss</string>
+    <string name="switch_content_description">Enable/disable the alarm</string>
 
 </resources>

@@ -23,6 +23,8 @@
 * ~~Cleanup Add Reminder Activity.~~ 
   * ~~Add the buttons on an action bar.~~
   * ~~Clean up the views.~~
+* Fix the calendar notification.
+* Use LocalDateTime instead of Calendar.
 * Change all EditTexts to TextInputEditText.
 * Add capabilities to select ringtones and sounds.
 * Add capability to trigger an alarm.
@@ -46,3 +48,8 @@
 * Going below the current time doesn't change the date to tomorrow.
 * Date validation doesn't work for the end date's date picker.
 * Need validations to skip views in the recycler view if the fields are empty.
+
+## Future Features
+
+- Integrate with WhatsApp and/or SMS to send out notifications/reminders to others, as needed.
+- Use something similar to ![Empty Reminder screen](./resources/empty_reminder_screen.png) instead of the current boring text.
