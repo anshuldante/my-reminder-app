@@ -30,7 +30,6 @@ import com.ava.myreminderapp.adapter.ReminderItemAdapter;
 import com.ava.myreminderapp.data.GetAllRemindersViewModel;
 import com.ava.myreminderapp.data.ReminderDmlViewModel;
 import com.ava.myreminderapp.model.ReminderModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import javax.inject.Inject;
 
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     checkPermissions();
 
-    setSupportActionBar(findViewById(R.id.am_tb));
+//    setSupportActionBar(findViewById(R.id.am_tb));
 
     findViewById(R.id.am_fab_add_reminder).setOnClickListener(view -> startUpsertReminderActivity(null));
 
@@ -99,9 +98,10 @@ public class MainActivity extends AppCompatActivity {
 
           @Override
           public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            reminderDml.deleteReminder(
-                reminderItemAdapter.getReminderAt(viewHolder.getAdapterPosition()));
-            Toast.makeText(MainActivity.this, "Deleted all reminders", Toast.LENGTH_SHORT)
+            ReminderModel reminder = reminderItemAdapter.getReminderAt(viewHolder.getAdapterPosition());
+            Log.i(TAG, "Deleting reminder: ID=" + reminder.getId() + ", Name=" + reminder.getName());
+            reminderDml.deleteReminder(reminder);
+            Toast.makeText(MainActivity.this, "Deleted reminder: " + reminder.getName(), Toast.LENGTH_SHORT)
                 .show();
           }
         })

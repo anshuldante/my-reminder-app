@@ -18,7 +18,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
@@ -68,6 +70,14 @@ public class NotificationStarterService extends Service {
     startForeground(33, buildNotification());
     mediaPlayer.start();
 
+    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+      if (mediaPlayer.isPlaying()) {
+        Log.i(TAG, "Stopping alarm at: " + new Date());
+        mediaPlayer.stop();
+        mediaPlayer.release();
+      }
+    }, 10_000);
+
     vibrateWithPattern();
     return START_STICKY;
   }
@@ -112,6 +122,7 @@ public class NotificationStarterService extends Service {
     }
   }
 
+  // TODO: add snooze functionality
   private void attachSnoozeAction(NotificationCompat.Builder builder) {
     Intent snoozeIntent = new Intent(this, NotificationStopperService.class);
     snoozeIntent.setAction(ACTION_SNOOZE);

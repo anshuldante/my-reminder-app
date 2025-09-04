@@ -67,6 +67,7 @@ public class ReminderItemAdapter
 
     holder.activeSwitch.setChecked(reminder.isActive());
 
+    // TODO: replace the hardcoded values.
     holder.nextOccurrenceDelay.setText(
         context.getString(R.string.ria_occurrence_delay, 1, "hours", 3, "minutes"));
 

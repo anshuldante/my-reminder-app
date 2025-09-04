@@ -43,6 +43,7 @@ import com.ava.myreminderapp.service.NotificationStarterService;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -306,7 +307,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
             dateTime.get(HOUR_OF_DAY),
             dateTime.get(MINUTE),
             true);
-    tpd.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+    Objects.requireNonNull(tpd.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
     tpd.show();
   }
 
@@ -368,7 +369,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   private void initRecurrenceDelayView() {
-    recurrenceDelayEt.setText(Integer.toString(reminderModel.getRecurrenceDelay()));
+    recurrenceDelayEt.setText(String.format(Locale.getDefault(), "%,d", reminderModel.getRecurrenceDelay()));
   }
 
   private void initEndDateView() {

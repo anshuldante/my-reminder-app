@@ -14,7 +14,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="@string/era_title_add_reminder"/>
 
     <TimePicker
         android:id="@+id/ara_time_picker_primary"
@@ -90,7 +91,6 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="32dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ara_sc_recurring_reminder">
 
