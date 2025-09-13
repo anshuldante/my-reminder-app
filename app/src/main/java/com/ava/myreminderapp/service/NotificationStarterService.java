@@ -3,13 +3,13 @@ package com.ava.myreminderapp.service;
 import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
-import static com.ava.myreminderapp.ReminderApplication.CHANNEL_DESCRIPTION;
-import static com.ava.myreminderapp.ReminderApplication.CHANNEL_ID;
-import static com.ava.myreminderapp.ReminderApplication.CHANNEL_NAME;
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_ID;
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_NAME;
 import static com.ava.myreminderapp.util.ReminderConstants.ACTION_DISMISS;
 import static com.ava.myreminderapp.util.ReminderConstants.ACTION_SNOOZE;
+import static com.ava.myreminderapp.util.ReminderConstants.CHANNEL_DESCRIPTION;
+import static com.ava.myreminderapp.util.ReminderConstants.CHANNEL_ID;
+import static com.ava.myreminderapp.util.ReminderConstants.CHANNEL_NAME;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_ID;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_NAME;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

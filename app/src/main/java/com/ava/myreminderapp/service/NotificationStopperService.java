@@ -1,10 +1,10 @@
 package com.ava.myreminderapp.service;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_ID;
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_NAME;
 import static com.ava.myreminderapp.util.ReminderConstants.ACTION_SNOOZE;
 import static com.ava.myreminderapp.util.ReminderConstants.DEFAULT_SNOOZE_TIME_10_MINUTES;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_ID;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_NAME;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

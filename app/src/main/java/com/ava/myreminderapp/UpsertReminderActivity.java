@@ -1,6 +1,13 @@
 package com.ava.myreminderapp;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_ACTIVE;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_END_TIME;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_ID;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_NAME;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_RECURRENCE_DELAY;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_RECURRENCE_TYPE;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_START_TIME;
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.HOUR;
 import static java.util.Calendar.HOUR_OF_DAY;
@@ -53,14 +60,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class UpsertReminderActivity extends AppCompatActivity {
   public static final String TAG = "MyReminderApp.UpsertReminderActivity";
-
-  public static final String REMINDER_ID = "com.ava.myreminderapp.REMINDER_ID";
-  public static final String REMINDER_ACTIVE = "com.ava.myreminderapp.REMINDER_ACTIVE";
-  public static final String REMINDER_NAME = "com.ava.myreminderapp.REMINDER_NAME";
-  public static final String REMINDER_START_TIME = "com.ava.myreminderapp.REMINDER_START_TIME";
-  public static final String REMINDER_RECURRENCE_DELAY = "com.ava.myreminderapp.REMINDER_REC_DELAY";
-  public static final String REMINDER_RECURRENCE_TYPE = "com.ava.myreminderapp.REMINDER_REC_TYPE";
-  public static final String REMINDER_END_TIME = "com.ava.myreminderapp.REMINDER_END_TIME";
 
   private final Calendar currentTime = Calendar.getInstance();
 

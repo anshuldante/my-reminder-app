@@ -1,12 +1,12 @@
 package com.ava.myreminderapp;
 
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_ACTIVE;
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_END_TIME;
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_ID;
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_NAME;
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_RECURRENCE_DELAY;
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_RECURRENCE_TYPE;
-import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_START_TIME;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_ACTIVE;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_END_TIME;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_ID;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_NAME;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_RECURRENCE_DELAY;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_RECURRENCE_TYPE;
+import static com.ava.myreminderapp.util.ReminderConstants.REMINDER_START_TIME;
 
 import android.Manifest;
 import android.content.Intent;
