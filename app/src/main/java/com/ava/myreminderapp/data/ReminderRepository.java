@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.ava.myreminderapp.model.ReminderModel;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 public class ReminderRepository {
@@ -47,14 +48,14 @@ public class ReminderRepository {
         });
   }
 
-  public void delete(ReminderModel model) {
+  public void delete(ReminderModel reminder) {
     reminderDaoExecutor.submit(
         () -> {
           try {
-            reminderDao.delete(model);
-            Log.i(TAG, "Deleted reminder: " + model.getName());
+            reminderDao.delete(reminder);
+            Log.i(TAG, "Deleted reminder: " + Optional.ofNullable(reminder.getName()).orElse(""));
           } catch (Exception e) {
-            Log.e(TAG, "Exception while deleting reminder: " + model.getName(), e);
+            Log.e(TAG, "Exception while deleting reminder: " + reminder.getName(), e);
           }
         });
   }

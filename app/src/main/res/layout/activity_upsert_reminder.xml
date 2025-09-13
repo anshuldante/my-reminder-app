@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".UpsertReminderActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/aur_tb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/era_title_add_reminder"/>
+        app:title="@string/era_title_add_reminder" />
 
     <TimePicker
         android:id="@+id/ara_time_picker_primary"

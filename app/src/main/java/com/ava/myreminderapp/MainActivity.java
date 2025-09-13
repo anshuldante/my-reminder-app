@@ -31,6 +31,8 @@ import com.ava.myreminderapp.data.GetAllRemindersViewModel;
 import com.ava.myreminderapp.data.ReminderDmlViewModel;
 import com.ava.myreminderapp.model.ReminderModel;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -56,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
 
     checkPermissions();
-
-//    setSupportActionBar(findViewById(R.id.am_tb));
 
     findViewById(R.id.am_fab_add_reminder).setOnClickListener(view -> startUpsertReminderActivity(null));
 
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             ReminderModel reminder = reminderItemAdapter.getReminderAt(viewHolder.getAdapterPosition());
             Log.i(TAG, "Deleting reminder: ID=" + reminder.getId() + ", Name=" + reminder.getName());
             reminderDml.deleteReminder(reminder);
-            Toast.makeText(MainActivity.this, "Deleted reminder: " + reminder.getName(), Toast.LENGTH_SHORT)
+            Toast.makeText(MainActivity.this, "Deleted reminder: " + Optional.ofNullable(reminder.getName()).orElse(""), Toast.LENGTH_SHORT)
                 .show();
           }
         })

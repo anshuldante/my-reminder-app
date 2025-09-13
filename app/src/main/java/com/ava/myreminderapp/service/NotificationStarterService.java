@@ -68,6 +68,12 @@ public class NotificationStarterService extends Service {
 
     // Because of the manually triggered flow, ID is always zero, hence hard-coding a non-zero value
     startForeground(33, buildNotification());
+
+    if (mediaPlayer == null) {
+      Log.i(TAG, "Media Player was null, reinitialising at: " + new Date());
+      mediaPlayer = MediaPlayer.create(this, R.raw.alarm);
+      mediaPlayer.setLooping(true);
+    }
     mediaPlayer.start();
 
     new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -88,6 +94,7 @@ public class NotificationStarterService extends Service {
     Log.i(TAG, "Trying to kill the notification");
 
     mediaPlayer.stop();
+    mediaPlayer = null;
     vibrator.cancel();
     notificationManager.cancel(notificationId);
   }
