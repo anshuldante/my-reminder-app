@@ -4,16 +4,14 @@ import androidx.lifecycle.ViewModel;
 
 import com.ava.myreminderapp.model.ReminderModel;
 
+import java.util.function.Consumer;
+
 public class ReminderDmlViewModel extends ViewModel {
 
   private final ReminderRepository reminderRepository;
 
   public ReminderDmlViewModel(ReminderRepository reminderRepository) {
     this.reminderRepository = reminderRepository;
-  }
-
-  public void addReminder(ReminderModel model) {
-    reminderRepository.add(model);
   }
 
   public void updateReminder(ReminderModel model) {
@@ -30,5 +28,9 @@ public class ReminderDmlViewModel extends ViewModel {
 
   public void deleteAllReminders() {
     reminderRepository.deleteAll();
+  }
+
+  public void addReminderWithCallback(ReminderModel model, Consumer<Long> callback) {
+    reminderRepository.addWithCallback(model, callback);
   }
 }

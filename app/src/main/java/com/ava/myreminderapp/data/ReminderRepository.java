@@ -9,6 +9,7 @@ import com.ava.myreminderapp.model.ReminderModel;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
 
 public class ReminderRepository {
 
@@ -24,16 +25,19 @@ public class ReminderRepository {
     this.getAllObservable = reminderDao.getAll();
   }
 
-  public void add(ReminderModel model) {
-    reminderDaoExecutor.submit(
-        () -> {
-          try {
-            reminderDao.add(model);
-            Log.i(TAG, "Added reminder: " + model);
-          } catch (Exception e) {
-            Log.e(TAG, "Error while adding the reminder: " + model, e);
-          }
-        });
+  public void addWithCallback(ReminderModel model, Consumer<Long> callback) {
+    reminderDaoExecutor.submit(() -> {
+      long id = -1;
+      try {
+        id = reminderDao.add(model);
+        Log.i(TAG, "Added reminder (async): " + model + ", id: " + id);
+      } catch (Exception e) {
+        Log.e(TAG, "Error while adding the reminder (async): " + model, e);
+      }
+      if (callback != null) {
+        callback.accept(id);
+      }
+    });
   }
 
   public void deleteAll() {

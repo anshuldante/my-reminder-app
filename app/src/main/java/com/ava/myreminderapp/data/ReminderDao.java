@@ -15,7 +15,7 @@ import java.util.List;
 public interface ReminderDao {
 
   @Insert
-  void add(ReminderModel model);
+  long add(ReminderModel model);
 
   @Query("Delete from reminders")
   void deleteAll();

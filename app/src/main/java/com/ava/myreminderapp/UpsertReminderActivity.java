@@ -68,7 +68,6 @@ public class UpsertReminderActivity extends AppCompatActivity {
 
   private AlarmManager alarmMgr;
 
-  // UI Components
   private ArrayAdapter<CharSequence> spinnerAdapter;
   private ConstraintLayout recurrenceDetailsCl;
   private Spinner recurrenceTypeSpinner;
@@ -105,7 +104,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
+  public boolean onCreateOptionsMenu(@NonNull Menu menu) {
     getMenuInflater().inflate(R.menu.upsert_menu, menu);
     return true;
   }
@@ -121,23 +120,34 @@ public class UpsertReminderActivity extends AppCompatActivity {
 
   private void saveReminder() {
     if (reminderModel.getId() > 0) {
+      triggerNotification();
       reminderDmlViewModel.updateReminder(reminderModel);
+      finish();
     } else {
-      reminderDmlViewModel.addReminder(reminderModel);
+      reminderDmlViewModel.addReminderWithCallback(reminderModel, (newId) -> {
+        if (newId > 0) {
+          reminderModel.setId(newId.intValue());
+          runOnUiThread(() -> {
+            triggerNotification();
+            finish();
+          });
+        } else {
+          Log.w(TAG, "Reminder not saved, skipping notification scheduling. Invalid ID: " + newId);
+          runOnUiThread(this::finish);
+        }
+      });
     }
-    triggerNotification();
-
     finish();
   }
 
   private void triggerNotification() {
-    Intent serviceIntent = new Intent(this, NotificationStarterService.class);
+    Intent alarmIntent = new Intent(this, NotificationStarterService.class);
 
-    serviceIntent.putExtra(REMINDER_ID, reminderModel.getId());
-    serviceIntent.putExtra(REMINDER_NAME, reminderModel.getName());
+    alarmIntent.putExtra(REMINDER_ID, reminderModel.getId());
+    alarmIntent.putExtra(REMINDER_NAME, reminderModel.getName());
 
     PendingIntent pendingIntent =
-        PendingIntent.getService(this, 1234, serviceIntent, FLAG_IMMUTABLE);
+        PendingIntent.getService(this, reminderModel.getId(), alarmIntent, FLAG_IMMUTABLE);
 
     Log.i(TAG, "Creating Reminder Notification Service Intent");
     Log.i(TAG, "Current Time: " + new Date());

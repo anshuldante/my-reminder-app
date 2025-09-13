@@ -8,6 +8,8 @@ import static com.ava.myreminderapp.ReminderApplication.CHANNEL_ID;
 import static com.ava.myreminderapp.ReminderApplication.CHANNEL_NAME;
 import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_ID;
 import static com.ava.myreminderapp.UpsertReminderActivity.REMINDER_NAME;
+import static com.ava.myreminderapp.util.ReminderConstants.ACTION_DISMISS;
+import static com.ava.myreminderapp.util.ReminderConstants.ACTION_SNOOZE;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -35,8 +37,6 @@ import com.ava.myreminderapp.R;
 import java.util.Date;
 
 public class NotificationStarterService extends Service {
-  private static final String ACTION_SNOOZE = "Snooze";
-  private static final String ACTION_DISMISS = "Dismiss";
 
   public static final String TAG = "MyReminderApp.NotificationStarterService";
 
@@ -45,6 +45,7 @@ public class NotificationStarterService extends Service {
   private int notificationId;
   private String notificationName;
   private NotificationManagerCompat notificationManager;
+  private boolean mediaPlayerReleased = false;
 
   @Override
   public void onCreate() {
@@ -56,6 +57,12 @@ public class NotificationStarterService extends Service {
 
     mediaPlayer = MediaPlayer.create(this, R.raw.alarm);
     mediaPlayer.setLooping(true);
+    mediaPlayer.setOnCompletionListener(mp -> safelyStopAndReleaseMediaPlayer());
+    mediaPlayer.setOnErrorListener((mp, what, extra) -> {
+      Log.e(TAG, "MediaPlayer error: what=" + what + ", extra=" + extra);
+      safelyStopAndReleaseMediaPlayer();
+      return true;
+    });
   }
 
   @Override
@@ -66,24 +73,22 @@ public class NotificationStarterService extends Service {
 
     Log.i(TAG, "Starting alarm at: " + new Date());
 
-    // Because of the manually triggered flow, ID is always zero, hence hard-coding a non-zero value
+    //TODO: Because of the manually triggered flow, ID is always zero, hence hard-coding a non-zero value
     startForeground(33, buildNotification());
 
     if (mediaPlayer == null) {
       Log.i(TAG, "Media Player was null, reinitialising at: " + new Date());
       mediaPlayer = MediaPlayer.create(this, R.raw.alarm);
       mediaPlayer.setLooping(true);
+      mediaPlayer.setOnCompletionListener(mp -> safelyStopAndReleaseMediaPlayer());
+      mediaPlayer.setOnErrorListener((mp, what, extra) -> {
+        Log.e(TAG, "MediaPlayer error: what=" + what + ", extra=" + extra);
+        safelyStopAndReleaseMediaPlayer();
+        return true;
+      });
     }
     mediaPlayer.start();
-
-    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-      if (mediaPlayer.isPlaying()) {
-        Log.i(TAG, "Stopping alarm at: " + new Date());
-        mediaPlayer.stop();
-        mediaPlayer.release();
-      }
-    }, 10_000);
-
+//    attachAlarmAutoStopper();
     vibrateWithPattern();
     return START_STICKY;
   }
@@ -91,12 +96,11 @@ public class NotificationStarterService extends Service {
   @Override
   public void onDestroy() {
     super.onDestroy();
-    Log.i(TAG, "Trying to kill the notification");
+    Log.i(TAG, "Cleaning up the notification");
 
-    mediaPlayer.stop();
-    mediaPlayer = null;
-    vibrator.cancel();
-    notificationManager.cancel(notificationId);
+    safelyStopAndReleaseMediaPlayer();
+    safelyCancelVibration();
+    safeCancelNotification();
   }
 
   @Nullable
@@ -117,25 +121,26 @@ public class NotificationStarterService extends Service {
   }
 
   private void attachDismissActions(NotificationCompat.Builder builder) {
-    {
-      Intent dismissIntent = new Intent(this, NotificationStopperService.class);
-      dismissIntent.setAction(ACTION_DISMISS);
-      dismissIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
-      PendingIntent dismissPendingIntent =
-          PendingIntent.getService(this, 0, dismissIntent, FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
-      builder.addAction(
-          R.drawable.ic_baseline_cancel_24, getString(R.string.dismiss), dismissPendingIntent);
-      builder.setContentIntent(dismissPendingIntent);
-    }
+    Intent dismissIntent = new Intent(this, NotificationStopperService.class);
+    dismissIntent.setAction(ACTION_DISMISS);
+    dismissIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
+    dismissIntent.putExtra(REMINDER_ID, notificationId);
+    dismissIntent.putExtra(REMINDER_NAME, notificationName);
+    PendingIntent dismissPendingIntent =
+        PendingIntent.getService(this, 0, dismissIntent, FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
+    builder.addAction(
+        R.drawable.ic_baseline_cancel_24, getString(R.string.dismiss), dismissPendingIntent);
+    builder.setContentIntent(dismissPendingIntent);
   }
 
-  // TODO: add snooze functionality
   private void attachSnoozeAction(NotificationCompat.Builder builder) {
     Intent snoozeIntent = new Intent(this, NotificationStopperService.class);
     snoozeIntent.setAction(ACTION_SNOOZE);
     snoozeIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
+    snoozeIntent.putExtra(REMINDER_ID, notificationId);
+    snoozeIntent.putExtra(REMINDER_NAME, notificationName);
     PendingIntent snoozePendingIntent =
-        PendingIntent.getBroadcast(this, 0, snoozeIntent, FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
+        PendingIntent.getService(this, 0, snoozeIntent, FLAG_IMMUTABLE | FLAG_UPDATE_CURRENT);
     builder.addAction(
         R.drawable.ic_baseline_snooze_24, getString(R.string.snooze), snoozePendingIntent);
   }
@@ -164,7 +169,65 @@ public class NotificationStarterService extends Service {
   private void vibrateWithPattern() {
     if (vibrator != null && vibrator.hasVibrator()) {
       long[] pattern = {0, 500, 300, 500};
-      vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1)); // Pass -1 to play the pattern once
+      vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1));
+    }
+  }
+
+  // To be used only when absolutely necessary
+  @SuppressWarnings("unused")
+  private void attachAlarmAutoStopper() {
+    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+      if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+        Log.i(TAG, "Stopping alarm at: " + new Date());
+        mediaPlayer.stop();
+        mediaPlayer.release();
+      }
+    }, 10_000);
+  }
+
+  private void safelyStopAndReleaseMediaPlayer() {
+    if (mediaPlayer == null || mediaPlayerReleased) {
+      return;
+    }
+    Handler mainHandler = new Handler(Looper.getMainLooper());
+    mainHandler.post(() -> {
+      if (mediaPlayer == null || mediaPlayerReleased) {
+        return;
+      }
+      try {
+        Log.i(TAG, "Stopping and releasing MediaPlayer on thread: " + Thread.currentThread().getName());
+        mediaPlayer.setOnCompletionListener(null);
+        mediaPlayer.setOnErrorListener(null);
+        if (mediaPlayer.isPlaying()) {
+          mediaPlayer.stop();
+        }
+        mediaPlayer.release();
+        mediaPlayerReleased = true;
+      } catch (IllegalStateException e) {
+        Log.w(TAG, "MediaPlayer was in illegal state during stop/release", e);
+      } finally {
+        mediaPlayer = null;
+      }
+    });
+  }
+
+  private void safelyCancelVibration() {
+    if (vibrator != null) {
+      try {
+        vibrator.cancel();
+      } catch (Exception e) {
+        Log.w(TAG, "Vibrator cancel failed", e);
+      }
+    }
+  }
+
+  private void safeCancelNotification() {
+    if (notificationManager != null && notificationId != -1) {
+      try {
+        notificationManager.cancel(notificationId);
+      } catch (Exception e) {
+        Log.w(TAG, "NotificationManager cancel failed", e);
+      }
     }
   }
 }

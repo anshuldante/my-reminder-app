@@ -19,9 +19,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,8 +31,6 @@ import com.ava.myreminderapp.adapter.ReminderItemAdapter;
 import com.ava.myreminderapp.data.GetAllRemindersViewModel;
 import com.ava.myreminderapp.data.ReminderDmlViewModel;
 import com.ava.myreminderapp.model.ReminderModel;
-
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -52,10 +51,29 @@ public class MainActivity extends AppCompatActivity {
   public static final String TAG = "MyReminderApp.MainActivity";
   private static final int REQUEST_CODE_SCHEDULE_EXACT_ALARM = 1001;
 
+  private ActivityResultLauncher<String> requestExactAlarmPermissionLauncher;
+  private ActivityResultLauncher<String> requestNotificationPermissionLauncher;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    requestExactAlarmPermissionLauncher = registerForActivityResult(
+        new ActivityResultContracts.RequestPermission(),
+        isGranted -> {
+          if (!isGranted) {
+            Toast.makeText(this, "Exact alarm permission denied", Toast.LENGTH_SHORT).show();
+          }
+        });
+
+    requestNotificationPermissionLauncher = registerForActivityResult(
+        new ActivityResultContracts.RequestPermission(),
+        isGranted -> {
+          if (!isGranted) {
+            Toast.makeText(this, "Notification permission denied. Reminders may not show notifications.", Toast.LENGTH_LONG).show();
+          }
+        });
 
     checkPermissions();
 
@@ -101,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             ReminderModel reminder = reminderItemAdapter.getReminderAt(viewHolder.getAdapterPosition());
             Log.i(TAG, "Deleting reminder: ID=" + reminder.getId() + ", Name=" + reminder.getName());
             reminderDml.deleteReminder(reminder);
-            Toast.makeText(MainActivity.this, "Deleted reminder: " + Optional.ofNullable(reminder.getName()).orElse(""), Toast.LENGTH_SHORT)
+            Toast.makeText(MainActivity.this, "Deleted reminder: " + (reminder.getName() != null ? reminder.getName() : ""), Toast.LENGTH_SHORT)
                 .show();
           }
         })
@@ -115,32 +133,33 @@ public class MainActivity extends AppCompatActivity {
             this,
             reminders -> {
               Log.i(TAG, "All reminders: " + reminders.toString());
-              runOnUiThread(
-                  () -> {
-                    if (reminders.isEmpty()) {
-                      reminderRecyclerView.setVisibility(View.GONE);
-                      emptyReminderList.setVisibility(View.VISIBLE);
-                    } else {
-                      reminderRecyclerView.setVisibility(View.VISIBLE);
-                      emptyReminderList.setVisibility(View.GONE);
-                    }
-                    reminderItemAdapter.submitList(reminders);
-                  });
+              if (reminders.isEmpty()) {
+                reminderRecyclerView.setVisibility(View.GONE);
+                emptyReminderList.setVisibility(View.VISIBLE);
+              } else {
+                reminderRecyclerView.setVisibility(View.VISIBLE);
+                emptyReminderList.setVisibility(View.GONE);
+              }
+              reminderItemAdapter.submitList(reminders);
             });
   }
 
   private void checkPermissions() {
     checkExactAlarmPermission();
+    checkNotificationPermission();
   }
 
   private void checkExactAlarmPermission() {
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.SCHEDULE_EXACT_ALARM)
         != PackageManager.PERMISSION_GRANTED) {
-      ActivityCompat.requestPermissions(
-          this,
-          new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM},
-          REQUEST_CODE_SCHEDULE_EXACT_ALARM
-      );
+      requestExactAlarmPermissionLauncher.launch(Manifest.permission.SCHEDULE_EXACT_ALARM);
+    }
+  }
+
+  private void checkNotificationPermission() {
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+        != PackageManager.PERMISSION_GRANTED) {
+      requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
     }
   }
 
@@ -150,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
+  public boolean onCreateOptionsMenu(@NonNull Menu menu) {
     getMenuInflater().inflate(R.menu.main_menu, menu);
     return true;
   }

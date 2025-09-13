@@ -53,3 +53,25 @@
 
 - Integrate with WhatsApp and/or SMS to send out notifications/reminders to others, as needed.
 - Use something similar to ![Empty Reminder screen](./resources/empty_reminder_screen.png) instead of the current boring text.
+
+## App Modernization Suggestions
+
+[x] Ensure themes use NoActionBar if you want a custom Toolbar.
+[x] Remove any legacy ActionBar usage from code and layouts.
+[x] Use Material Components for UI consistency.
+[] Migrate deprecated APIs and libraries.
+[x] Refactor code for MVVM or recommended architecture.
+[] Use ViewBinding or Jetpack Compose for UI.
+[] Update Gradle dependencies to latest stable versions.
+[] Add runtime permissions handling if targeting Android 6.0+.
+[] Use androidx libraries everywhere.
+[] Optimize layouts for accessibility and responsiveness.
+[] Add unit and UI tests.
+
+## Build Commands
+
+```shell
+./gradlew clean
+./gradlew assembleDebug
+./gradlew installDebug
+```
