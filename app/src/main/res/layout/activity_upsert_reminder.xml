@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:timePickerMode="clock" />
+            android:timePickerMode="spinner" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -63,7 +63,7 @@
                 android:padding="16dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_calendar"
-                app:tint="@color/blue_700" />
+                app:tint="#F5F5F5" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -83,7 +83,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/ara_hint_reminder_name"
+            android:hint=""
             android:padding="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -91,6 +91,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Rise and Shine!, Sleeping Time!"
+                android:backgroundTint="@android:color/transparent"
+                android:hint="@string/ara_hint_reminder_name"
                 android:inputType="textShortMessage" />
         </com.google.android.material.textfield.TextInputLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -221,7 +223,7 @@
                 android:src="@drawable/ic_calendar"
                 app:layout_constraintStart_toEndOf="@+id/ara_tv_end_date"
                 app:layout_constraintTop_toBottomOf="@+id/ara_hz_divider"
-                app:tint="@color/blue_700" />
+                app:tint="#F5F5F5" />
 
             <TextView
                 android:id="@+id/ara_tv_end_time"

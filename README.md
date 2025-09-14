@@ -1,31 +1,7 @@
 # My Reminder App
 
-## Alarms and scheduled tasks
-
-* [WorkManager writeup](https://medium.com/google-developer-experts/services-the-life-with-without-and-worker-6933111d62a6)
-* [Impact of App Force Close](https://stackoverflow.com/questions/14041208/how-to-reset-alarm-if-app-is-force-closed-in-android?noredirect=1&lq=1)
-* [Schedule tasks with WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
-* [Notifications](https://developer.android.com/guide/topics/ui/notifiers/notifications)
-* [Testing with Doze and App Standby](https://developer.android.com/training/monitoring-device-state/doze-standby#testing_doze_and_app_standby)
-* [Creating a simple alarm app](https://learntodroid.com/how-to-create-a-simple-alarm-clock-app-in-android/)
-
-## Help Needed
-
-- With project structure and modularisation
-- With screen appearance
-- With screen design
-
 ## TODO (high priority)
 
-* ~~Switch to LiveData from Observable if things don't work as expected.~~
-* ~~Switch to ViewModel for CRUD.~~
-* ~~Switch to ListAdapter.~~
-* ~~Cleanup Add Reminder Activity.~~ 
-  * ~~Add the buttons on an action bar.~~
-  * ~~Clean up the views.~~
-* Fix the calendar notification.
-* Use LocalDateTime instead of Calendar.
-* Change all EditTexts to TextInputEditText.
 * Add capabilities to select ringtones and sounds.
 * Add capability to trigger an alarm.
 * Add background services to trigger alarms as scheduled.
@@ -35,8 +11,6 @@
 
 ## TODO (low priority)
 
-* Use [this](https://developer.android.com/guide/topics/ui/controls/pickers#java) to convert the date and time pickers to fragments.
-* Use [this](https://developer.android.com/guide/topics/ui/dialogs) to convert dialog to DialogFragment.
 * Scheduler and executor cleanup if needed.
 * Look into ,TextInputLayout, SnackBars, TabLayout (for tabs), NavigationView (for sliding screens), Coordinator layout.
 * AppBarLayout, BottomAppBar
@@ -67,11 +41,26 @@
 [] Use androidx libraries everywhere.
 [] Optimize layouts for accessibility and responsiveness.
 [] Add unit and UI tests.
-
-## Build Commands
-
-```shell
-./gradlew clean
-./gradlew assembleDebug
-./gradlew installDebug
-```
+[] Implement dark mode support.
+[] Use Navigation Component for in-app navigation.
+[] Leverage WorkManager for background tasks.
+[] Integrate Firebase or other analytics tools.
+[] Use Glide or Picasso for image loading.
+[] Implement data persistence with Room or other databases.
+[] Optimize app performance and memory usage.
+[] Follow Material Design guidelines for UI/UX.
+[] Use ConstraintLayout for complex layouts.
+[] Implement localization for multiple languages.
+[] Use Lint and static analysis tools to improve code quality.
+[] Regularly update the app to fix bugs and add new features.
+[] Monitor app performance with tools like Firebase Performance Monitoring.
+[] Use Coroutines or RxJava for asynchronous programming.
+[] Implement push notifications with Firebase Cloud Messaging.
+[] Use SharedPreferences or DataStore for storing user settings.
+[] Ensure proper error handling and user feedback.
+[] Use vector drawables for better scalability and performance.
+[] Optimize app size by removing unused resources and code.
+[] Use Jetpack libraries for modern Android development.
+[] Follow best practices for security and data privacy.
+[] Regularly review and refactor code to maintain quality.
+[] Stay updated with the latest Android development trends and best practices.
