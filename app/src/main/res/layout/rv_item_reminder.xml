@@ -45,8 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/switch_content_description"
-            android:textOn="ON"
-            android:textOff="OFF"
+            android:textOn="@string/switch_on"
+            android:textOff="@string/switch_off"
             app:layout_constraintBottom_toTopOf="@+id/rir_tv_reminder_date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

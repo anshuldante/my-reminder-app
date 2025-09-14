@@ -18,17 +18,13 @@ import static java.util.Calendar.SECOND;
 import static java.util.Calendar.YEAR;
 
 import android.app.AlarmManager;
-import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -36,7 +32,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -47,6 +42,7 @@ import com.ava.myreminderapp.listener.RecurrenceTypeListener;
 import com.ava.myreminderapp.listener.ReminderNameChangedListener;
 import com.ava.myreminderapp.model.ReminderModel;
 import com.ava.myreminderapp.service.NotificationStarterService;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -86,8 +82,6 @@ public class UpsertReminderActivity extends AppCompatActivity {
     setContentView(R.layout.activity_upsert_reminder);
     alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-    setupToolbar();
-
     reminderModel = buildReminderAndSetTitle();
 
     initComponentMappings();
@@ -95,26 +89,11 @@ public class UpsertReminderActivity extends AppCompatActivity {
     initRecurrenceComponents();
   }
 
-  private void setupToolbar() {
-    setSupportActionBar(findViewById(R.id.aur_tb));
-    Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setDisplayShowHomeEnabled(true);
-  }
-
   @Override
-  public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-    getMenuInflater().inflate(R.menu.upsert_menu, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    if (item.getItemId() == R.id.save_reminder) {
-      saveReminder();
-      return true;
-    }
-    return super.onOptionsItemSelected(item);
+  protected void onStart() {
+    super.onStart();
+    findViewById(R.id.btn_cancel).setOnClickListener(v -> finish());
+    findViewById(R.id.btn_save).setOnClickListener(v -> saveReminder());
   }
 
   private void saveReminder() {
@@ -160,7 +139,6 @@ public class UpsertReminderActivity extends AppCompatActivity {
     Intent intent = getIntent();
     int id = intent.getIntExtra(REMINDER_ID, -1);
     if (id != -1) {
-      setTitle(R.string.era_title_edit_reminder);
       return new ReminderModel(
           id,
           intent.getStringExtra(REMINDER_NAME),
@@ -170,7 +148,6 @@ public class UpsertReminderActivity extends AppCompatActivity {
           intent.getStringExtra(REMINDER_RECURRENCE_TYPE),
           intent.getLongExtra(REMINDER_END_TIME, 0));
     }
-    setTitle(R.string.era_title_add_reminder);
     return new ReminderModel();
   }
 
@@ -185,6 +162,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
     recurrenceSwitch = findViewById(R.id.ara_sc_recurring_reminder);
     startDateTextView = findViewById(R.id.ara_display_date);
     startTimePicker = findViewById(R.id.ara_time_picker_primary);
+    startTimePicker.setIs24HourView(false);
     startDateImageView = findViewById(R.id.ara_iv_calendar);
     reminderName = findViewById(R.id.ara_et_reminder_name);
     endDateTextView = findViewById(R.id.ara_tv_end_date);
@@ -221,48 +199,33 @@ public class UpsertReminderActivity extends AppCompatActivity {
   private void initStartDateComponents() {
     initStartDateView();
     Calendar startDateTime = reminderModel.getStartDateTime();
-    startDateImageView.setOnClickListener(
-        view -> attachDatePickerDialog(startDateTime, this::initStartDateView, true));
+    startDateImageView.setOnClickListener(view -> showMaterialDatePicker(startDateTime, this::initStartDateView, true));
   }
 
-  private void attachDatePickerDialog(Calendar dateTime, Runnable runnable, boolean isStartDate) {
-    DatePickerDialog dpd =
-        new DatePickerDialog(
-            this,
-            (view, year, month, dayOfMonth) ->
-                dateSetListener(view, runnable, dateTime, isStartDate),
-            dateTime.get(YEAR),
-            dateTime.get(MONTH),
-            dateTime.get(DATE));
-    dpd.show();
-  }
-
-  private void dateSetListener(
-      DatePicker view, Runnable runnable, Calendar dateTime, boolean isStartDate) {
-    Log.i(
-        TAG,
-        "View to Date: "
-            + view.getDayOfMonth()
-            + "/"
-            + (view.getMonth() + 1)
-            + "/"
-            + view.getYear());
-
-    currentTime.setTimeInMillis(System.currentTimeMillis());
-
-    if (isStartDate && dateTime.before(currentTime)) {
-      Toast.makeText(this, "Can't setup alarms for a time in the past!", Toast.LENGTH_LONG).show();
-    } else if (!isStartDate && dateTime.before(reminderModel.getStartDateTime())) {
-      Toast.makeText(this, "Recurrence date can't be before alarm start date!", Toast.LENGTH_LONG)
-          .show();
-    } else {
-      dateTime.set(YEAR, view.getYear());
-      dateTime.set(MONTH, view.getMonth());
-      dateTime.set(DATE, view.getDayOfMonth());
-      dateTime.set(SECOND, 0);
-      dateTime.set(MILLISECOND, 0);
-      runnable.run();
-    }
+  private void showMaterialDatePicker(Calendar dateTime, Runnable updateView, boolean isStartDate) {
+    MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+        .setTitleText(isStartDate ? "Select Start Date" : "Select End Date")
+        .setSelection(dateTime.getTimeInMillis())
+        .build();
+    datePicker.addOnPositiveButtonClickListener(selection -> {
+      Calendar selected = Calendar.getInstance();
+      selected.setTimeInMillis(selection);
+      // Validation logic (same as before)
+      currentTime.setTimeInMillis(System.currentTimeMillis());
+      if (isStartDate && selected.before(currentTime)) {
+        Toast.makeText(this, "Can't setup alarms for a time in the past!", Toast.LENGTH_LONG).show();
+      } else if (!isStartDate && selected.before(reminderModel.getStartDateTime())) {
+        Toast.makeText(this, "Recurrence date can't be before alarm start date!", Toast.LENGTH_LONG).show();
+      } else {
+        dateTime.set(YEAR, selected.get(YEAR));
+        dateTime.set(MONTH, selected.get(MONTH));
+        dateTime.set(DATE, selected.get(DATE));
+        dateTime.set(SECOND, 0);
+        dateTime.set(MILLISECOND, 0);
+        updateView.run();
+      }
+    });
+    datePicker.show(getSupportFragmentManager(), isStartDate ? "start_date_picker" : "end_date_picker");
   }
 
   private void initReminderNameComponents() {
@@ -280,6 +243,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
             initRecurrenceDelayView();
           }
         });
+    recurrenceDetailsCl.setVisibility(recurrenceSwitch.isChecked() ? View.VISIBLE : View.GONE);
   }
 
   private void initRecurrenceTypeSpinner() {
@@ -297,8 +261,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
     initEndDateView();
     ImageView endDateImageView = findViewById(R.id.ara_iv_end_calendar);
     endDateImageView.setOnClickListener(
-        view ->
-            attachDatePickerDialog(reminderModel.getEndDateTime(), this::initEndDateView, false));
+        view -> showMaterialDatePicker(reminderModel.getEndDateTime(), this::initEndDateView, false));
   }
 
   private void initEndTimeComponents() {

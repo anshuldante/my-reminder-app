@@ -6,24 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/am_ab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/am_tb"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:navigationIconTint="@color/black"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
-            app:title="@string/main_activity_title"
-            app:titleTextColor="@color/black" />
-    </com.google.android.material.appbar.AppBarLayout>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/am_rv_reminders"
         android:layout_width="match_parent"
@@ -31,7 +13,7 @@
         android:layout_gravity="center"
         android:scrollbars="vertical"
         android:visibility="gone"
-        android:background="#F5F5F5"
+        android:background="?android:attr/colorBackground"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/rv_item_reminder" />
@@ -53,6 +35,9 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:contentDescription="@string/am_fab_add_reminder"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@drawable/ic_add"
+        app:backgroundTint="?android:attr/colorBackground"
+        app:tint="@color/blue_700"
+        app:maxImageSize="40dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

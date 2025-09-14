@@ -63,5 +63,9 @@
     <string name="snooze">Snooze</string>
     <string name="dismiss">Dismiss</string>
     <string name="switch_content_description">Enable/disable the alarm</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_save">Save</string>
+    <string name="switch_on">ON</string>
+    <string name="switch_off">OFF</string>
 
 </resources>
