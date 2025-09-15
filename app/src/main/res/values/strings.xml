@@ -27,13 +27,17 @@
     <string name="ara_switch_repeat_reminder">Repeat Reminder</string>
     <string name="ara_label_every">Every</string>
     <string name="ara_repetition_delay">Repetition delay</string>
-    <string name="ara_date_default">End Date: Tue, 29 Jun</string>
-    <string name="ara_time_default">End Time: 11:52 AM</string>
+    <string name="ara_date_default">Ends on: Tue, 29 Jun</string>
+    <string name="ara_time_default">Ends at: 11:52 AM</string>
     <string name="ara_button_reset">RESET</string>
     <string name="ara_button_save">SAVE</string>
 
+    <string name="ara_infinite_recurrence">No end date (infinite)</string>
+    <string name="ara_recurrence_summary_default">Repeats as per your settings</string>
+    <string name="ara_select_time_description">Select Time</string>
     <string name="ara_reminder_end_time">End Time - %1$d:%2$d</string>
     <string name="ara_reminder_end_date">End Date - %1$d/%2$d/%3$d</string>
+    <string name="ara_recurrence_number_required">Please enter a recurrence number</string>
 
 
     <!--  Strings for Reminder List Recycler View Layout  -->

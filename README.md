@@ -2,16 +2,14 @@
 
 ## TODO (high priority)
 
-* Add capabilities to select ringtones and sounds.
-* Add capability to trigger an alarm.
-* Add background services to trigger alarms as scheduled.
+* Text box to show the next set of upcoming alarms.
 * Add notifications for upcoming alarms. 
 * Add various preferences.
 * Add an option to create a daily TODO list that shows up early in the morning or as soon as the phone internet is up, or maybe some other selectable conditions.
+* Add capabilities to select ringtones and sounds.
 
 ## TODO (low priority)
 
-* Scheduler and executor cleanup if needed.
 * Look into ,TextInputLayout, SnackBars, TabLayout (for tabs), NavigationView (for sliding screens), Coordinator layout.
 * AppBarLayout, BottomAppBar
 * Delete All menu item in general long-click will allow selection and deletion.

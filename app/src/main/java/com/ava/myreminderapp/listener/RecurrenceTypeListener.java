@@ -11,9 +11,11 @@ public class RecurrenceTypeListener implements AdapterView.OnItemSelectedListene
   public static final String TAG = "MyReminderApp.RecurrenceTypeListener";
 
   private final ReminderModel reminder;
+  private final Runnable summaryUpdater;
 
-  public RecurrenceTypeListener(ReminderModel reminder) {
+  public RecurrenceTypeListener(ReminderModel reminder, Runnable summaryUpdater) {
     this.reminder = reminder;
+    this.summaryUpdater = summaryUpdater;
   }
 
   @Override
@@ -27,6 +29,7 @@ public class RecurrenceTypeListener implements AdapterView.OnItemSelectedListene
             + parent.getItemAtPosition(position).toString());
     reminder.setRecurrenceType(
         RecurrenceType.getRecurrenceTypeByValue((String) parent.getItemAtPosition(position)));
+    summaryUpdater.run();
   }
 
   @Override
