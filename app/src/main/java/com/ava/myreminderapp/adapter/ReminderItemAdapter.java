@@ -24,16 +24,16 @@ public class ReminderItemAdapter
   private static final ReminderDiffCallback DIFF_CALLBACK = new ReminderDiffCallback();
   private final Context context;
   private final ReminderDmlViewModel dmlViewModel;
-  private final ReminderItemCLickListener itemCLickListener;
+  private final ReminderItemClickListener itemClickListener;
 
   public ReminderItemAdapter(
       Context context,
       ReminderDmlViewModel dmlViewModel,
-      ReminderItemCLickListener itemCLickListener) {
+      ReminderItemClickListener itemClickListener) {
     super(DIFF_CALLBACK);
     this.context = context;
     this.dmlViewModel = dmlViewModel;
-    this.itemCLickListener = itemCLickListener;
+    this.itemClickListener = itemClickListener;
   }
 
   @NonNull
@@ -62,7 +62,7 @@ public class ReminderItemAdapter
         context.getString(
             R.string.ria_reminder_date,
             startDateTime.get(Calendar.DATE),
-            startDateTime.get(Calendar.MONTH),
+            startDateTime.get(Calendar.MONTH) + 1,
             startDateTime.get(Calendar.YEAR)));
 
     holder.activeSwitch.setChecked(reminder.isActive());
@@ -84,7 +84,7 @@ public class ReminderItemAdapter
               endDateTime.get(Calendar.HOUR_OF_DAY),
               endDateTime.get(Calendar.MINUTE),
               endDateTime.get(Calendar.DATE),
-              endDateTime.get(Calendar.MONTH),
+              endDateTime.get(Calendar.MONTH) + 1,
               endDateTime.get(Calendar.YEAR)));
     } else {
       holder.recurrenceDetails.setVisibility(View.GONE);
@@ -120,8 +120,8 @@ public class ReminderItemAdapter
 
     private void openReminderEditor(View view) {
       int position = getAdapterPosition();
-      if (itemCLickListener != null && position != RecyclerView.NO_POSITION) {
-        itemCLickListener.onItemClick(getReminderAt(position));
+      if (itemClickListener != null && position != RecyclerView.NO_POSITION) {
+        itemClickListener.onItemClick(getReminderAt(position));
       }
     }
 
@@ -136,7 +136,7 @@ public class ReminderItemAdapter
     return getItem(position);
   }
 
-  public interface ReminderItemCLickListener {
+  public interface ReminderItemClickListener {
     void onItemClick(ReminderModel reminderAt);
   }
 }

@@ -1,6 +1,0 @@
-<com.google.android.material.bottomappbar.BottomAppBar android:id="@+id/bottomBar" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom|end" app:backgroundTint="?attr/colorPrimary" app:layout_scrollFlags="scroll|enterAlways" app:contentInsetEnd="0dp" app:contentInsetStart="0dp" app:fabAlignmentMode="end">
-
-	<com.google.android.material.bottomnavigation.BottomNavigationView android:id="@+id/bottomNavigation" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginEnd="100dp" app:backgroundTint="@android:color/transparent" app:itemIconTint="@android:color/white" app:itemRippleColor="@android:color/white" app:itemTextColor="@android:color/white" />
-</com.google.android.material.bottomappbar.BottomAppBar>
-
-<com.google.android.material.floatingactionbutton.FloatingActionButton android:id="@+id/am_fab_add_reminder" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginEnd="32dp" android:layout_marginBottom="32dp" android:contentDescription="@string/am_fab_add_reminder" app:layout_anchor="@id/bottomBar" app:srcCompat="@android:drawable/ic_input_add" />

@@ -6,6 +6,7 @@ public class ReminderConstants {
   public static final String ACTION_SNOOZE = "Snooze";
   public static final String ACTION_DISMISS = "Dismiss";
   public static final long DEFAULT_SNOOZE_TIME_10_MINUTES = 10 * 1000L;
+  private static final int MAX_RECURRENCE_NUMBER = 1000;
 
   public static final String CHANNEL_ID = "MY_REMINDER_APP_CHANNEL";
   public static final String CHANNEL_NAME = "com.ava.myreminderapp";

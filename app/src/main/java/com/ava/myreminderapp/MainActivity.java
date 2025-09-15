@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
   private TextView emptyReminderList;
 
   public static final String TAG = "MyReminderApp.MainActivity";
-  private static final int REQUEST_CODE_SCHEDULE_EXACT_ALARM = 1001;
 
   private ActivityResultLauncher<String> requestExactAlarmPermissionLauncher;
   private ActivityResultLauncher<String> requestNotificationPermissionLauncher;
@@ -114,11 +113,17 @@ public class MainActivity extends AppCompatActivity {
 
           @Override
           public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            ReminderModel reminder = reminderItemAdapter.getReminderAt(viewHolder.getAdapterPosition());
-            Log.i(TAG, "Deleting reminder: ID=" + reminder.getId() + ", Name=" + reminder.getName());
-            reminderDml.deleteReminder(reminder);
-            Toast.makeText(MainActivity.this, "Deleted reminder: " + (reminder.getName() != null ? reminder.getName() : ""), Toast.LENGTH_SHORT)
-                .show();
+            try {
+              ReminderModel reminder = reminderItemAdapter.getReminderAt(viewHolder.getAdapterPosition());
+              if (reminder != null) {
+                Log.i(TAG, "Deleting reminder: ID=" + reminder.getId() + ", Name=" + reminder.getName());
+                reminderDml.deleteReminder(reminder);
+                Toast.makeText(MainActivity.this, "Deleted reminder: " + (reminder.getName() != null ? reminder.getName() : ""), Toast.LENGTH_SHORT).show();
+              }
+            } catch (Exception e) {
+              Log.e(TAG, "Error deleting reminder", e);
+              Toast.makeText(MainActivity.this, "Error deleting reminder", Toast.LENGTH_SHORT).show();
+            }
           }
         })
         .attachToRecyclerView(reminderRecyclerView);
@@ -130,15 +135,20 @@ public class MainActivity extends AppCompatActivity {
         .observe(
             this,
             reminders -> {
-              Log.i(TAG, "All reminders: " + reminders.toString());
-              if (reminders.isEmpty()) {
-                reminderRecyclerView.setVisibility(View.GONE);
-                emptyReminderList.setVisibility(View.VISIBLE);
-              } else {
-                reminderRecyclerView.setVisibility(View.VISIBLE);
-                emptyReminderList.setVisibility(View.GONE);
+              try {
+                Log.i(TAG, "All reminders: " + reminders.toString());
+                if (reminders == null || reminders.isEmpty()) {
+                  reminderRecyclerView.setVisibility(View.GONE);
+                  emptyReminderList.setVisibility(View.VISIBLE);
+                } else {
+                  reminderRecyclerView.setVisibility(View.VISIBLE);
+                  emptyReminderList.setVisibility(View.GONE);
+                }
+                reminderItemAdapter.submitList(reminders);
+              } catch (Exception e) {
+                Log.e(TAG, "Error observing reminders", e);
+                Toast.makeText(this, "Error loading reminders", Toast.LENGTH_SHORT).show();
               }
-              reminderItemAdapter.submitList(reminders);
             });
   }
 

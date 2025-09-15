@@ -1,290 +1,335 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--Top level Scrollbar-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
-    tools:context=".UpsertReminderActivity">
+    android:fadeScrollbars="false"
+    android:scrollbars="vertical">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_time"
-        android:layout_width="0dp"
+    <!--Top level constraint layout-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="?android:attr/colorBackground"
+        tools:context=".UpsertReminderActivity">
 
-        <TimePicker
-            android:id="@+id/ara_time_picker_primary"
-            android:layout_width="match_parent"
+        <!--Time Picker-->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_time"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:timePickerMode="spinner" />
-    </com.google.android.material.card.MaterialCardView>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_date"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_time">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/ara_display_date"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/ara_default_display_date" />
-
-            <ImageView
-                android:id="@+id/ara_iv_calendar"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/ara_select_date_description"
-                android:elevation="4dp"
-                android:padding="16dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_calendar"
-                app:tint="#F5F5F5" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_date">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint=""
-            android:padding="16dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ara_et_reminder_name"
+            <TimePicker
+                android:id="@+id/ara_time_picker_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints="Rise and Shine!, Sleeping Time!"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="@string/ara_hint_reminder_name"
-                android:inputType="textShortMessage" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_repeat"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_name">
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/ara_sc_recurring_reminder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/ara_switch_repeat_reminder"
-            android:textOff="@string/switch_off"
-            android:textOn="@string/switch_on" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_recurrence"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_repeat">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ara_cl_recurrence_delay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/ara_tv_every"
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="32dp"
-                android:text="@string/ara_label_every"
-                app:layout_constraintBottom_toTopOf="@id/ara_hz_divider"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/ara_et_recurrence_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="32dp"
-                android:autofillHints="1,2,3,4"
-                android:hint="@string/ara_repetition_delay"
-                android:inputType="number"
-                app:layout_constraintBottom_toTopOf="@id/ara_hz_divider"
-                app:layout_constraintEnd_toStartOf="@+id/ara_sn_recurrence_type"
-                app:layout_constraintStart_toEndOf="@id/ara_tv_every"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Spinner
-                android:id="@+id/ara_sn_recurrence_type"
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="32dp"
-                android:autofillHints="a,b,c"
-                app:layout_constraintBottom_toTopOf="@id/ara_hz_divider"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/ara_et_recurrence_number" />
-
-            <View
-                android:id="@+id/ara_hz_divider"
-                style="@style/Divider"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ara_et_recurrence_number" />
-
-            <TextView
-                android:id="@+id/ara_tv_end_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="32dp"
-                android:text="@string/ara_date_default"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ara_hz_divider" />
-
-            <ImageView
-                android:id="@+id/ara_iv_end_calendar"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="32dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/ara_select_date_description"
                 android:padding="16dp"
-                android:src="@drawable/ic_calendar"
-                app:layout_constraintStart_toEndOf="@+id/ara_tv_end_date"
-                app:layout_constraintTop_toBottomOf="@+id/ara_hz_divider"
-                app:tint="#F5F5F5" />
+                android:timePickerMode="spinner" />
+        </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:id="@+id/ara_tv_end_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="32dp"
-                android:text="@string/ara_time_default"
-                app:layout_constraintEnd_toStartOf="@id/ara_iv_end_clock"
-                app:layout_constraintTop_toBottomOf="@+id/ara_hz_divider" />
+        <!--Primary Mandatory date-picker-->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_time">
 
-            <ImageView
-                android:id="@+id/ara_iv_end_clock"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="32dp"
-                android:contentDescription="@string/ara_select_date_description"
-                android:src="@drawable/ic_clock"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/ara_display_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/ara_default_display_date"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ara_iv_calendar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/ara_iv_calendar"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/ara_select_date_description"
+                    android:elevation="4dp"
+                    android:padding="16dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_calendar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="#F5F5F5" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!--Reminder name-->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_date">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+                android:padding="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ara_et_reminder_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="Rise and Shine!, Sleeping Time!"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/ara_hint_reminder_name"
+                    android:inputType="textShortMessage" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!--Repeat reminder switch-->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_repeat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_name">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp">
+
+                <TextView
+                    android:id="@+id/ara_tv_repeat_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ara_switch_repeat_reminder"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/ara_sc_recurring_reminder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!--Recurrence selections-->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_recurrence"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:layout_constraintBottom_toTopOf="@id/btn_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_repeat">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ara_cl_recurrence_delay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <!-- Every + number + type row -->
+                <TextView
+                    android:id="@+id/ara_tv_every"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ara_label_every"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/ara_et_recurrence_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:autofillHints="count"
+                    android:hint="@string/ara_repetition_delay"
+                    android:inputType="number"
+                    android:textSize="20sp"
+                    app:layout_constraintBaseline_toBaselineOf="@id/ara_tv_every"
+                    app:layout_constraintStart_toEndOf="@id/ara_tv_every" />
+
+                <Spinner
+                    android:id="@+id/ara_sn_recurrence_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textSize="20sp"
+                    app:layout_constraintBaseline_toBaselineOf="@id/ara_tv_every"
+                    app:layout_constraintStart_toEndOf="@id/ara_et_recurrence_number" />
+
+                <!-- Infinite recurrence checkbox -->
+                <CheckBox
+                    android:id="@+id/ara_cb_infinite_recurrence"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/ara_infinite_recurrence"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ara_tv_every" />
+
+                <!-- End date row: display + picker -->
+                <TextView
+                    android:id="@+id/ara_tv_end_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/ara_date_default"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/ara_iv_end_calendar"
+                    app:layout_constraintEnd_toStartOf="@id/ara_iv_end_calendar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ara_cb_infinite_recurrence" />
+
+                <ImageView
+                    android:id="@+id/ara_iv_end_calendar"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/ara_select_date_description"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_calendar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ara_cb_infinite_recurrence"
+                    app:tint="#F5F5F5" />
+
+                <!-- End time row: display + picker -->
+                <TextView
+                    android:id="@+id/ara_tv_end_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/ara_time_default"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/ara_iv_end_clock"
+                    app:layout_constraintEnd_toStartOf="@id/ara_iv_end_clock"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ara_iv_end_calendar" />
+
+                <ImageView
+                    android:id="@+id/ara_iv_end_clock"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/ara_select_time_description"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_clock"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ara_iv_end_calendar"
+                    app:tint="#F5F5F5" />
+
+                <!-- Recurrence summary below -->
+                <TextView
+                    android:id="@+id/ara_tv_recurrence_summary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/ara_recurrence_summary_default"
+                    android:textColor="@color/blue_700"
+                    android:textStyle="italic"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ara_iv_end_clock" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!--Save and Cancel buttons-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btn_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_cancel"
+                android:textColor="@color/blue_700"
+                android:textSize="18sp"
+                app:backgroundTint="?android:attr/colorBackground"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_save"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_save"
+                android:textColor="@color/blue_700"
+                android:textSize="18sp"
+                app:backgroundTint="?android:attr/colorBackground"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ara_hz_divider" />
+                app:layout_constraintStart_toEndOf="@id/btn_cancel"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
 
-    <LinearLayout
-        android:id="@+id/btn_bar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_cancel"
-            android:textColor="@color/blue_700"
-            android:textSize="18sp"
-            app:backgroundTint="?android:attr/colorBackground" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_save"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_save"
-            android:textColor="@color/blue_700"
-            android:textSize="18sp"
-            app:backgroundTint="?android:attr/colorBackground" />
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -22,9 +22,11 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -38,10 +40,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.ava.myreminderapp.data.ReminderDmlViewModel;
 import com.ava.myreminderapp.listener.RecurrenceDelayChangedListener;
+import com.ava.myreminderapp.listener.RecurrenceSwitchListener;
 import com.ava.myreminderapp.listener.RecurrenceTypeListener;
 import com.ava.myreminderapp.listener.ReminderNameChangedListener;
 import com.ava.myreminderapp.model.ReminderModel;
 import com.ava.myreminderapp.service.NotificationStarterService;
+import com.ava.myreminderapp.util.FriendlyDateType;
+import com.ava.myreminderapp.util.InputFilterMinMax;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.Calendar;
@@ -75,28 +82,55 @@ public class UpsertReminderActivity extends AppCompatActivity {
   private TextView endDateTextView;
   private TextView endTimeTextView;
   private EditText reminderName;
+  private TextView recurrenceSummaryTv;
+  private CheckBox infiniteRecurrenceCb;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_upsert_reminder);
-    alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-    reminderModel = buildReminderAndSetTitle();
-
-    initComponentMappings();
-    initPrimaryComponents();
-    initRecurrenceComponents();
+    try {
+      alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
+      reminderModel = buildReminderAndSetTitle();
+      initComponentMappings();
+      initPrimaryComponents();
+      initRecurrenceComponents();
+    } catch (Exception e) {
+      Log.e(TAG, "Error during activity initialization", e);
+      Toast.makeText(this, "Initialization error", Toast.LENGTH_SHORT).show();
+      finish();
+    }
   }
 
   @Override
   protected void onStart() {
     super.onStart();
-    findViewById(R.id.btn_cancel).setOnClickListener(v -> finish());
-    findViewById(R.id.btn_save).setOnClickListener(v -> saveReminder());
+    try {
+      findViewById(R.id.btn_cancel).setOnClickListener(v -> finish());
+      findViewById(R.id.btn_save).setOnClickListener(v -> {
+        try {
+          saveReminder();
+        } catch (Exception e) {
+          Log.e(TAG, "Error saving reminder", e);
+          Toast.makeText(this, "Error saving reminder", Toast.LENGTH_SHORT).show();
+        }
+      });
+    } catch (Exception e) {
+      Log.e(TAG, "Error setting up button listeners", e);
+      Toast.makeText(this, "Error initializing buttons", Toast.LENGTH_SHORT).show();
+    }
   }
 
   private void saveReminder() {
+    if (recurrenceSwitch.isChecked()) {
+      String recurrenceNumber = recurrenceDelayEt.getText() == null ? "" : recurrenceDelayEt.getText().toString().trim();
+      if (recurrenceNumber.isEmpty()) {
+        recurrenceDelayEt.setError("Please enter a recurrence number");
+        recurrenceDelayEt.requestFocus();
+        return;
+      }
+    }
+
     if (reminderModel.getId() > 0) {
       triggerNotification();
       reminderDmlViewModel.updateReminder(reminderModel);
@@ -115,24 +149,30 @@ public class UpsertReminderActivity extends AppCompatActivity {
         }
       });
     }
-    finish();
   }
 
   private void triggerNotification() {
-    Intent alarmIntent = new Intent(this, NotificationStarterService.class);
+    try {
+      Intent alarmIntent = new Intent(this, NotificationStarterService.class);
+      alarmIntent.putExtra(REMINDER_ID, reminderModel.getId());
+      alarmIntent.putExtra(REMINDER_NAME, reminderModel.getName());
 
-    alarmIntent.putExtra(REMINDER_ID, reminderModel.getId());
-    alarmIntent.putExtra(REMINDER_NAME, reminderModel.getName());
+      PendingIntent pendingIntent = PendingIntent.getService(
+          this, reminderModel.getId(), alarmIntent, FLAG_IMMUTABLE);
 
-    PendingIntent pendingIntent =
-        PendingIntent.getService(this, reminderModel.getId(), alarmIntent, FLAG_IMMUTABLE);
+      Log.i(TAG, "Creating Reminder Notification Service Intent");
+      Log.i(TAG, "Current Time: " + new Date());
+      Log.i(TAG, "Alarm Time: " + reminderModel.getStartDateTime().getTime());
 
-    Log.i(TAG, "Creating Reminder Notification Service Intent");
-    Log.i(TAG, "Current Time: " + new Date());
-    Log.i(TAG, "Alarm Time: " + reminderModel.getStartDateTime().getTime());
-
-    alarmMgr.setExactAndAllowWhileIdle(
-        AlarmManager.RTC_WAKEUP, reminderModel.getStartDateTime().getTimeInMillis(), pendingIntent);
+      alarmMgr.setExactAndAllowWhileIdle(
+          AlarmManager.RTC_WAKEUP,
+          reminderModel.getStartDateTime().getTimeInMillis(),
+          pendingIntent
+      );
+    } catch (Exception e) {
+      Log.e(TAG, "Failed to schedule notification", e);
+      Toast.makeText(this, "Failed to schedule notification", Toast.LENGTH_SHORT).show();
+    }
   }
 
   private ReminderModel buildReminderAndSetTitle() {
@@ -152,21 +192,22 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   private void initComponentMappings() {
-    spinnerAdapter =
-        ArrayAdapter.createFromResource(
-            this, R.array.recurrence_type_array, android.R.layout.simple_spinner_item);
+    spinnerAdapter = ArrayAdapter.createFromResource(
+        this, R.array.recurrence_type_array, android.R.layout.simple_spinner_item);
     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
     recurrenceTypeSpinner = findViewById(R.id.ara_sn_recurrence_type);
     recurrenceDetailsCl = findViewById(R.id.ara_cl_recurrence_delay);
     recurrenceDelayEt = findViewById(R.id.ara_et_recurrence_number);
     recurrenceSwitch = findViewById(R.id.ara_sc_recurring_reminder);
     startDateTextView = findViewById(R.id.ara_display_date);
     startTimePicker = findViewById(R.id.ara_time_picker_primary);
-    startTimePicker.setIs24HourView(false);
     startDateImageView = findViewById(R.id.ara_iv_calendar);
     reminderName = findViewById(R.id.ara_et_reminder_name);
     endDateTextView = findViewById(R.id.ara_tv_end_date);
     endTimeTextView = findViewById(R.id.ara_tv_end_time);
+    recurrenceSummaryTv = findViewById(R.id.ara_tv_recurrence_summary);
+    infiniteRecurrenceCb = findViewById(R.id.ara_cb_infinite_recurrence);
   }
 
   private void initPrimaryComponents() {
@@ -181,19 +222,41 @@ public class UpsertReminderActivity extends AppCompatActivity {
     initRecurrenceDelayComponent();
     initEndDateComponents();
     initEndTimeComponents();
+    initInfiniteRecurrenceComponent();
   }
 
   private void initStartTimeComponents() {
     initStartTimeView();
 
     Calendar startDateTime = reminderModel.getStartDateTime();
-    startTimePicker.setIs24HourView(true);
-    startTimePicker.setOnTimeChangedListener(
-        (view, hourOfDay, minute) -> {
-          Log.i(TAG, "View to Start Time: " + hourOfDay + ":" + minute);
-          startDateTime.set(HOUR_OF_DAY, hourOfDay);
-          startDateTime.set(MINUTE, minute);
-        });
+    startTimePicker.setOnTimeChangedListener((view, hourOfDay, minute) -> {
+      Calendar now = Calendar.getInstance();
+      FriendlyDateType type = getFriendlyDateType(startDateTime);
+
+      switch (type) {
+        case TODAY:
+          if (hourOfDay < now.get(Calendar.HOUR_OF_DAY) ||
+              (hourOfDay == now.get(Calendar.HOUR_OF_DAY) && minute < now.get(Calendar.MINUTE))) {
+            startDateTime.add(Calendar.DATE, 1);
+          }
+          break;
+        case TOMORROW:
+          if (hourOfDay > now.get(Calendar.HOUR_OF_DAY) ||
+              (hourOfDay == now.get(Calendar.HOUR_OF_DAY) && minute >= now.get(Calendar.MINUTE))) {
+            startDateTime.add(Calendar.DATE, -1);
+          }
+          break;
+        default:
+          break;
+      }
+
+      startDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+      startDateTime.set(Calendar.MINUTE, minute);
+      startDateTime.set(Calendar.SECOND, 0);
+      startDateTime.set(Calendar.MILLISECOND, 0);
+
+      initStartDateView();
+    });
   }
 
   private void initStartDateComponents() {
@@ -203,14 +266,22 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   private void showMaterialDatePicker(Calendar dateTime, Runnable updateView, boolean isStartDate) {
+    CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+    if (isStartDate) {
+      constraintsBuilder.setValidator(DateValidatorPointForward.now());
+    } else {
+      constraintsBuilder.setValidator(DateValidatorPointForward.from(reminderModel.getStartDateTime().getTimeInMillis()));
+    }
+
     MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
         .setTitleText(isStartDate ? "Select Start Date" : "Select End Date")
         .setSelection(dateTime.getTimeInMillis())
+        .setCalendarConstraints(constraintsBuilder.build())
         .build();
+
     datePicker.addOnPositiveButtonClickListener(selection -> {
       Calendar selected = Calendar.getInstance();
       selected.setTimeInMillis(selection);
-      // Validation logic (same as before)
       currentTime.setTimeInMillis(System.currentTimeMillis());
       if (isStartDate && selected.before(currentTime)) {
         Toast.makeText(this, "Can't setup alarms for a time in the past!", Toast.LENGTH_LONG).show();
@@ -231,30 +302,29 @@ public class UpsertReminderActivity extends AppCompatActivity {
   private void initReminderNameComponents() {
     initReminderNameView();
     reminderName.addTextChangedListener(new ReminderNameChangedListener(reminderModel));
-    reminderName.requestFocus();
   }
 
   private void initRecurrenceSwitchListener() {
     initRecurrenceSwitchView();
     recurrenceSwitch.setOnCheckedChangeListener(
-        (buttonView, isChecked) -> {
-          recurrenceDetailsCl.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-          if (!isChecked) {
-            initRecurrenceDelayView();
-          }
-        });
+        new RecurrenceSwitchListener(
+            recurrenceDetailsCl,
+            this::initRecurrenceDelayView,
+            this::updateRecurrenceSummary
+        ));
     recurrenceDetailsCl.setVisibility(recurrenceSwitch.isChecked() ? View.VISIBLE : View.GONE);
   }
 
   private void initRecurrenceTypeSpinner() {
     initRecurrenceTypeView();
     recurrenceTypeSpinner.setAdapter(spinnerAdapter);
-    recurrenceTypeSpinner.setOnItemSelectedListener(new RecurrenceTypeListener(reminderModel));
+    recurrenceTypeSpinner.setOnItemSelectedListener(new RecurrenceTypeListener(reminderModel, this::updateRecurrenceSummary));
   }
 
   private void initRecurrenceDelayComponent() {
     initRecurrenceDelayView();
-    recurrenceDelayEt.addTextChangedListener(new RecurrenceDelayChangedListener(reminderModel));
+    recurrenceDelayEt.setFilters(new InputFilter[]{new InputFilterMinMax(1, 1000)});
+    recurrenceDelayEt.addTextChangedListener(new RecurrenceDelayChangedListener(reminderModel, this::updateRecurrenceSummary));
   }
 
   private void initEndDateComponents() {
@@ -269,6 +339,10 @@ public class UpsertReminderActivity extends AppCompatActivity {
     ImageView endTimeImageView = findViewById(R.id.ara_iv_end_clock);
     endTimeImageView.setOnClickListener(
         view -> attachTimePickerDialog(reminderModel.getEndDateTime(), this::initEndTimeView));
+  }
+
+  private void initInfiniteRecurrenceComponent() {
+    infiniteRecurrenceCb.setOnCheckedChangeListener((buttonView, isChecked) -> updateRecurrenceSummary());
   }
 
   private void attachTimePickerDialog(Calendar dateTime, Runnable runnable) {
@@ -318,12 +392,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
             + (startDateTime.get(MONTH) + 1)
             + "/"
             + startDateTime.get(YEAR));
-    startDateTextView.setText(
-        getString(
-            R.string.ria_reminder_date,
-            startDateTime.get(DATE),
-            startDateTime.get(MONTH) + 1,
-            startDateTime.get(YEAR)));
+    startDateTextView.setText(getFriendlyDate(startDateTime));
   }
 
   private void initReminderNameView() {
@@ -341,7 +410,12 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   private void initRecurrenceDelayView() {
-    recurrenceDelayEt.setText(String.format(Locale.getDefault(), "%,d", reminderModel.getRecurrenceDelay()));
+    int delay = reminderModel.getRecurrenceDelay();
+    if (delay > 0) {
+      recurrenceDelayEt.setText(String.valueOf(delay));
+    } else {
+      recurrenceDelayEt.setText("");
+    }
   }
 
   private void initEndDateView() {
@@ -354,18 +428,89 @@ public class UpsertReminderActivity extends AppCompatActivity {
             + (dateTime.get(MONTH) + 1)
             + "/"
             + dateTime.get(YEAR));
-    endDateTextView.setText(
-        getString(
-            R.string.ara_reminder_end_date,
-            dateTime.get(DATE),
-            dateTime.get(MONTH) + 1,
-            dateTime.get(YEAR)));
+    endDateTextView.setText(getFriendlyDate(dateTime));
+    updateRecurrenceSummary();
   }
 
   private void initEndTimeView() {
     Calendar dateTime = reminderModel.getEndDateTime();
+    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("hh:mm a", Locale.getDefault());
     Log.i(TAG, "End time to view: " + dateTime.get(HOUR_OF_DAY) + ":" + dateTime.get(MINUTE));
-    endTimeTextView.setText(
-        getString(R.string.ara_reminder_end_time, dateTime.get(HOUR_OF_DAY), dateTime.get(MINUTE)));
+    endTimeTextView.setText(sdf.format(dateTime.getTime()));
+    updateRecurrenceSummary();
+  }
+
+  private String getFriendlyDate(Calendar date) {
+    FriendlyDateType type = getFriendlyDateType(date);
+    Calendar today = Calendar.getInstance();
+
+    String prefix = "";
+    if (type == FriendlyDateType.TODAY) {
+      prefix = "Today-";
+    } else if (type == FriendlyDateType.TOMORROW) {
+      prefix = "Tomorrow-";
+    }
+
+    java.text.SimpleDateFormat sdf;
+    if (date.get(Calendar.YEAR) == today.get(Calendar.YEAR)) {
+      sdf = new java.text.SimpleDateFormat("EEE, d MMM", Locale.getDefault());
+    } else {
+      sdf = new java.text.SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+    }
+
+    return prefix + sdf.format(date.getTime());
+  }
+
+  private FriendlyDateType getFriendlyDateType(Calendar date) {
+    Calendar today = Calendar.getInstance();
+    Calendar tomorrow = (Calendar) today.clone();
+    tomorrow.add(Calendar.DATE, 1);
+
+    if (date.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+        date.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
+      return FriendlyDateType.TODAY;
+    } else if (date.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) &&
+        date.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR)) {
+      return FriendlyDateType.TOMORROW;
+    } else {
+      return FriendlyDateType.OTHER;
+    }
+  }
+
+  private void updateRecurrenceSummary() {
+    if (!recurrenceSwitch.isChecked()) {
+      recurrenceSummaryTv.setText(getString(R.string.ara_recurrence_summary_default));
+      return;
+    }
+    String number = recurrenceDelayEt.getText() == null ? "" : recurrenceDelayEt.getText().toString().trim();
+    String type = recurrenceTypeSpinner.getSelectedItem() != null ? recurrenceTypeSpinner.getSelectedItem().toString() : "";
+
+    if (number.isEmpty()) {
+      recurrenceSummaryTv.setText(getString(R.string.ara_recurrence_number_required));
+      return;
+    }
+
+    StringBuilder summary = new StringBuilder();
+    summary.append("Every ").append(number).append(" ").append(type.toLowerCase(Locale.getDefault()));
+
+    if (infiniteRecurrenceCb.isChecked()) {
+      summary.append(" forever");
+    } else {
+      String endDate = endDateTextView.getText() != null ? endDateTextView.getText().toString().trim() : "";
+      String endTime = endTimeTextView.getText() != null ? endTimeTextView.getText().toString().trim() : "";
+      boolean hasEndDate = !endDate.isEmpty() && !endDate.equals(getString(R.string.ara_date_default));
+      boolean hasEndTime = !endTime.isEmpty() && !endTime.equals(getString(R.string.ara_time_default));
+      if (hasEndDate || hasEndTime) {
+        summary.append(" till ");
+        if (hasEndTime) {
+          summary.append(endTime);
+          if (hasEndDate) summary.append(" ");
+        }
+        if (hasEndDate) {
+          summary.append(endDate);
+        }
+      }
+    }
+    recurrenceSummaryTv.setText(summary.toString());
   }
 }
