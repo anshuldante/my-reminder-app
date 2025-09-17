@@ -2,9 +2,12 @@
 
 ## TODO (high priority)
 
-* A new recurrence type to allow infinite recurrence.
+* Add logic to show multiple different notifications instead of overwriting the previous one.
+* Add logic to show the next alarm time in the notification.
+* Add logic to show the next alarm time in the app bar.
+* Check recurrence implementation.
 * Text box to show the next set of upcoming alarms.
-* Add notifications for upcoming alarms. 
+* Add notifications for upcoming alarms.
 * Add various preferences.
 * Add an option to create a daily TODO list that shows up early in the morning or as soon as the phone internet is up, or maybe some other selectable conditions.
 * Add capabilities to select ringtones and sounds.
