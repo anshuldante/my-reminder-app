@@ -43,17 +43,19 @@ import com.ava.myreminderapp.listener.RecurrenceDelayChangedListener;
 import com.ava.myreminderapp.listener.RecurrenceSwitchListener;
 import com.ava.myreminderapp.listener.RecurrenceTypeListener;
 import com.ava.myreminderapp.listener.ReminderNameChangedListener;
+import com.ava.myreminderapp.model.RecurrenceType;
 import com.ava.myreminderapp.model.ReminderModel;
 import com.ava.myreminderapp.service.NotificationStarterService;
+import com.ava.myreminderapp.util.DateTimeDisplayUtil;
 import com.ava.myreminderapp.util.FriendlyDateType;
 import com.ava.myreminderapp.util.InputFilterMinMax;
+import com.ava.myreminderapp.util.RecurrenceDisplayUtil;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -83,7 +85,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
   private TextView endTimeTextView;
   private EditText reminderName;
   private TextView recurrenceSummaryTv;
-  private CheckBox infiniteRecurrenceCb;
+  private CheckBox foreverRecurrenceCb;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -207,7 +209,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
     endDateTextView = findViewById(R.id.ara_tv_end_date);
     endTimeTextView = findViewById(R.id.ara_tv_end_time);
     recurrenceSummaryTv = findViewById(R.id.ara_tv_recurrence_summary);
-    infiniteRecurrenceCb = findViewById(R.id.ara_cb_infinite_recurrence);
+    foreverRecurrenceCb = findViewById(R.id.ara_cb_forever_recurrence);
   }
 
   private void initPrimaryComponents() {
@@ -222,7 +224,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
     initRecurrenceDelayComponent();
     initEndDateComponents();
     initEndTimeComponents();
-    initInfiniteRecurrenceComponent();
+    initForeverRecurrenceComponent();
   }
 
   private void initStartTimeComponents() {
@@ -231,7 +233,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
     Calendar startDateTime = reminderModel.getStartDateTime();
     startTimePicker.setOnTimeChangedListener((view, hourOfDay, minute) -> {
       Calendar now = Calendar.getInstance();
-      FriendlyDateType type = getFriendlyDateType(startDateTime);
+      FriendlyDateType type = DateTimeDisplayUtil.getFriendlyDateType(startDateTime);
 
       switch (type) {
         case TODAY:
@@ -341,8 +343,19 @@ public class UpsertReminderActivity extends AppCompatActivity {
         view -> attachTimePickerDialog(reminderModel.getEndDateTime(), this::initEndTimeView));
   }
 
-  private void initInfiniteRecurrenceComponent() {
-    infiniteRecurrenceCb.setOnCheckedChangeListener((buttonView, isChecked) -> updateRecurrenceSummary());
+  private void initForeverRecurrenceComponent() {
+    foreverRecurrenceCb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+      if (isChecked) {
+        reminderModel.setRecurrenceType(RecurrenceType.FOREVER);
+        recurrenceTypeSpinner.setSelection(spinnerAdapter.getPosition(RecurrenceType.FOREVER.getValue()));
+        recurrenceTypeSpinner.setEnabled(false);
+      } else {
+        reminderModel.setRecurrenceType(RecurrenceType.NEVER);
+        recurrenceTypeSpinner.setSelection(spinnerAdapter.getPosition(RecurrenceType.NEVER.getValue()));
+        recurrenceTypeSpinner.setEnabled(true);
+      }
+      updateRecurrenceSummary();
+    });
   }
 
   private void attachTimePickerDialog(Calendar dateTime, Runnable runnable) {
@@ -392,7 +405,7 @@ public class UpsertReminderActivity extends AppCompatActivity {
             + (startDateTime.get(MONTH) + 1)
             + "/"
             + startDateTime.get(YEAR));
-    startDateTextView.setText(getFriendlyDate(startDateTime));
+    startDateTextView.setText(DateTimeDisplayUtil.getFriendlyDate(this, startDateTime));
   }
 
   private void initReminderNameView() {
@@ -404,9 +417,14 @@ public class UpsertReminderActivity extends AppCompatActivity {
   }
 
   private void initRecurrenceTypeView() {
-    String recurrenceType = reminderModel.getRecurrenceType().getValue();
-    Log.i(TAG, "Recurrence Type to View: " + recurrenceType);
-    recurrenceTypeSpinner.setSelection(spinnerAdapter.getPosition(recurrenceType));
+    RecurrenceType recurrenceType = reminderModel.getRecurrenceType();
+    if (recurrenceType == null || recurrenceType == RecurrenceType.NEVER) {
+      recurrenceType = RecurrenceType.NEVER;
+      reminderModel.setRecurrenceType(recurrenceType);
+    }
+    String recurrenceTypeText = reminderModel.getRecurrenceType().getValue();
+    Log.i(TAG, "Recurrence Type to View: " + recurrenceTypeText);
+    recurrenceTypeSpinner.setSelection(spinnerAdapter.getPosition(recurrenceTypeText));
   }
 
   private void initRecurrenceDelayView() {
@@ -428,89 +446,42 @@ public class UpsertReminderActivity extends AppCompatActivity {
             + (dateTime.get(MONTH) + 1)
             + "/"
             + dateTime.get(YEAR));
-    endDateTextView.setText(getFriendlyDate(dateTime));
+    endDateTextView.setText(DateTimeDisplayUtil.getFriendlyDate(this, dateTime));
     updateRecurrenceSummary();
   }
 
   private void initEndTimeView() {
     Calendar dateTime = reminderModel.getEndDateTime();
-    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("hh:mm a", Locale.getDefault());
     Log.i(TAG, "End time to view: " + dateTime.get(HOUR_OF_DAY) + ":" + dateTime.get(MINUTE));
-    endTimeTextView.setText(sdf.format(dateTime.getTime()));
+    endTimeTextView.setText(DateTimeDisplayUtil.getFriendlyTime(dateTime));
     updateRecurrenceSummary();
   }
 
-  private String getFriendlyDate(Calendar date) {
-    FriendlyDateType type = getFriendlyDateType(date);
-    Calendar today = Calendar.getInstance();
-
-    String prefix = "";
-    if (type == FriendlyDateType.TODAY) {
-      prefix = "Today-";
-    } else if (type == FriendlyDateType.TOMORROW) {
-      prefix = "Tomorrow-";
-    }
-
-    java.text.SimpleDateFormat sdf;
-    if (date.get(Calendar.YEAR) == today.get(Calendar.YEAR)) {
-      sdf = new java.text.SimpleDateFormat("EEE, d MMM", Locale.getDefault());
-    } else {
-      sdf = new java.text.SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
-    }
-
-    return prefix + sdf.format(date.getTime());
-  }
-
-  private FriendlyDateType getFriendlyDateType(Calendar date) {
-    Calendar today = Calendar.getInstance();
-    Calendar tomorrow = (Calendar) today.clone();
-    tomorrow.add(Calendar.DATE, 1);
-
-    if (date.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
-        date.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
-      return FriendlyDateType.TODAY;
-    } else if (date.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) &&
-        date.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR)) {
-      return FriendlyDateType.TOMORROW;
-    } else {
-      return FriendlyDateType.OTHER;
-    }
-  }
-
   private void updateRecurrenceSummary() {
-    if (!recurrenceSwitch.isChecked()) {
-      recurrenceSummaryTv.setText(getString(R.string.ara_recurrence_summary_default));
-      return;
-    }
     String number = recurrenceDelayEt.getText() == null ? "" : recurrenceDelayEt.getText().toString().trim();
-    String type = recurrenceTypeSpinner.getSelectedItem() != null ? recurrenceTypeSpinner.getSelectedItem().toString() : "";
-
-    if (number.isEmpty()) {
-      recurrenceSummaryTv.setText(getString(R.string.ara_recurrence_number_required));
-      return;
-    }
-
-    StringBuilder summary = new StringBuilder();
-    summary.append("Every ").append(number).append(" ").append(type.toLowerCase(Locale.getDefault()));
-
-    if (infiniteRecurrenceCb.isChecked()) {
-      summary.append(" forever");
+    RecurrenceType type;
+    if (foreverRecurrenceCb.isChecked()) {
+      type = RecurrenceType.FOREVER;
     } else {
-      String endDate = endDateTextView.getText() != null ? endDateTextView.getText().toString().trim() : "";
-      String endTime = endTimeTextView.getText() != null ? endTimeTextView.getText().toString().trim() : "";
-      boolean hasEndDate = !endDate.isEmpty() && !endDate.equals(getString(R.string.ara_date_default));
-      boolean hasEndTime = !endTime.isEmpty() && !endTime.equals(getString(R.string.ara_time_default));
-      if (hasEndDate || hasEndTime) {
-        summary.append(" till ");
-        if (hasEndTime) {
-          summary.append(endTime);
-          if (hasEndDate) summary.append(" ");
-        }
-        if (hasEndDate) {
-          summary.append(endDate);
-        }
+      Object selected = recurrenceTypeSpinner.getSelectedItem();
+      if (selected instanceof RecurrenceType) {
+        type = (RecurrenceType) selected;
+      } else if (selected != null) {
+        type = RecurrenceType.getRecurrenceTypeByValue(selected.toString());
+      } else {
+        type = RecurrenceType.NEVER;
       }
     }
-    recurrenceSummaryTv.setText(summary.toString());
+    String endDate = endDateTextView.getText() != null ? endDateTextView.getText().toString().trim() : "";
+    String endTime = endTimeTextView.getText() != null ? endTimeTextView.getText().toString().trim() : "";
+
+    String summary = RecurrenceDisplayUtil.getRecurrenceSummary(
+        this,
+        number,
+        type,
+        endDate,
+        endTime
+    );
+    recurrenceSummaryTv.setText(summary);
   }
 }

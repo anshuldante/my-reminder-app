@@ -2,6 +2,7 @@
 
 ## TODO (high priority)
 
+* A new recurrence type to allow infinite recurrence.
 * Text box to show the next set of upcoming alarms.
 * Add notifications for upcoming alarms. 
 * Add various preferences.

@@ -212,7 +212,7 @@
 
                 <!-- Infinite recurrence checkbox -->
                 <CheckBox
-                    android:id="@+id/ara_cb_infinite_recurrence"
+                    android:id="@+id/ara_cb_forever_recurrence"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -232,7 +232,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/ara_iv_end_calendar"
                     app:layout_constraintEnd_toStartOf="@id/ara_iv_end_calendar"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ara_cb_infinite_recurrence" />
+                    app:layout_constraintTop_toBottomOf="@id/ara_cb_forever_recurrence" />
 
                 <ImageView
                     android:id="@+id/ara_iv_end_calendar"
@@ -244,7 +244,7 @@
                     android:padding="16dp"
                     android:src="@drawable/ic_calendar"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ara_cb_infinite_recurrence"
+                    app:layout_constraintTop_toBottomOf="@id/ara_cb_forever_recurrence"
                     app:tint="#F5F5F5" />
 
                 <!-- End time row: display + picker -->
