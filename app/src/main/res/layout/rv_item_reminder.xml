@@ -1,82 +1,67 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- app/src/main/res/layout/rv_item_reminder.xml -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="6dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
     android:layout_marginStart="12dp"
-    android:layout_marginEnd="12dp">
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/standard_padding">
 
+        <!-- Alarm name row -->
         <TextView
-            android:id="@+id/rir_tv_reminderName"
-            android:layout_width="wrap_content"
+            android:id="@+id/rir_tv_alarm_name"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/rir_default_reminder_name"
+            android:text="@string/rir_default_alarm_name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Next occurrence and switch row -->
         <TextView
-            android:id="@+id/rir_tv_reminder_time"
-            style="@android:style/TextAppearance.Large"
-            android:layout_width="wrap_content"
+            android:id="@+id/rir_tv_next_occurrence"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/rir_default_reminder_time"
+            android:text="@string/rir_default_next_occurrence"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/rir_tv_alarm_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rir_tv_reminderName" />
-
-        <TextView
-            android:id="@+id/rir_tv_reminder_recurrence_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/rir_default_recurrence_details"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rir_tv_reminder_time" />
+            app:layout_constraintEnd_toStartOf="@id/rir_sw_active"
+            app:layout_constraintBottom_toTopOf="@id/rir_tv_summary"
+            app:layout_constraintHorizontal_bias="0" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/rir_sw_active"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/switch_content_description"
-            android:textOn="@string/switch_on"
             android:textOff="@string/switch_off"
-            app:layout_constraintBottom_toTopOf="@+id/rir_tv_reminder_date"
+            android:textOn="@string/switch_on"
+            app:layout_constraintTop_toBottomOf="@id/rir_tv_alarm_name"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@id/rir_tv_summary" />
 
+        <!-- Summary row -->
         <TextView
-            android:id="@+id/rir_tv_reminder_date"
-            android:layout_width="wrap_content"
+            android:id="@+id/rir_tv_summary"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/rir_default_reminder_date"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/rir_default_summary"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@id/rir_tv_next_occurrence"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rir_sw_active" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-        <TextView
-            android:id="@+id/rir_tv_next_occurrence_delay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/rir_default_occurrence_delay"
-            app:layout_constraintEnd_toStartOf="@id/rir_sw_active"
-            app:layout_constraintStart_toEndOf="@id/rir_tv_reminderName"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/rir_tv_end_date_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/rir_default_end_date_time"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/rir_tv_reminder_date"
-            app:layout_constraintStart_toEndOf="@id/rir_tv_reminder_recurrence_details" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>

@@ -70,11 +70,8 @@ public class NotificationStarterService extends Service {
     notificationId = intent.getIntExtra(REMINDER_ID, -1);
     notificationName = intent.getStringExtra(REMINDER_NAME);
     Log.i(TAG, "Inside onStartCommand, creating a notification for ID: " + notificationId);
-
     Log.i(TAG, "Starting alarm at: " + new Date());
-
-    //TODO: Because of the manually triggered flow, ID is always zero, hence hard-coding a non-zero value
-    startForeground(33, buildNotification());
+    startForeground(notificationId, buildNotification());
 
     if (mediaPlayer == null) {
       Log.i(TAG, "Media Player was null, reinitialising at: " + new Date());

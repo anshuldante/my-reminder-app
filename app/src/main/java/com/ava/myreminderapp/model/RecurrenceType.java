@@ -8,7 +8,9 @@ public enum RecurrenceType {
   MONTH("Months(s)"),
   DAY("Day(s)"),
   HOUR("Hour(s)"),
-  MINUTE("Minute(s)");
+  MINUTE("Minute(s)"),
+  FOREVER("Forever"),
+  NEVER("Never");
 
   private static final Map<String, RecurrenceType> ENUM_MAP;
 
@@ -19,6 +21,8 @@ public enum RecurrenceType {
     ENUM_MAP.put(DAY.getValue(), DAY);
     ENUM_MAP.put(HOUR.getValue(), HOUR);
     ENUM_MAP.put(MINUTE.getValue(), MINUTE);
+    ENUM_MAP.put(FOREVER.getValue(), FOREVER);
+    ENUM_MAP.put(NEVER.getValue(), NEVER);
   }
 
   private final String value;

@@ -48,29 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
   public static final String TAG = "MyReminderApp.MainActivity";
 
-  private ActivityResultLauncher<String> requestExactAlarmPermissionLauncher;
-  private ActivityResultLauncher<String> requestNotificationPermissionLauncher;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-
-    requestExactAlarmPermissionLauncher = registerForActivityResult(
-        new ActivityResultContracts.RequestPermission(),
-        isGranted -> {
-          if (!isGranted) {
-            Toast.makeText(this, "Exact alarm permission denied", Toast.LENGTH_SHORT).show();
-          }
-        });
-
-    requestNotificationPermissionLauncher = registerForActivityResult(
-        new ActivityResultContracts.RequestPermission(),
-        isGranted -> {
-          if (!isGranted) {
-            Toast.makeText(this, "Notification permission denied. Reminders may not show notifications.", Toast.LENGTH_LONG).show();
-          }
-        });
 
     checkPermissions();
 
@@ -137,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             reminders -> {
               try {
                 Log.i(TAG, "All reminders: " + reminders.toString());
-                if (reminders == null || reminders.isEmpty()) {
+                if (reminders.isEmpty()) {
                   reminderRecyclerView.setVisibility(View.GONE);
                   emptyReminderList.setVisibility(View.VISIBLE);
                 } else {
@@ -158,13 +139,22 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void checkExactAlarmPermission() {
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.SCHEDULE_EXACT_ALARM)
-        != PackageManager.PERMISSION_GRANTED) {
-      requestExactAlarmPermissionLauncher.launch(Manifest.permission.SCHEDULE_EXACT_ALARM);
+    android.app.AlarmManager alarmManager = (android.app.AlarmManager) getSystemService(ALARM_SERVICE);
+    if (!alarmManager.canScheduleExactAlarms()) {
+      Toast.makeText(this, "Exact alarm permission required for reminders.", Toast.LENGTH_LONG).show();
+      Intent intent = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+      startActivity(intent);
     }
   }
 
   private void checkNotificationPermission() {
+    ActivityResultLauncher<String> requestNotificationPermissionLauncher = registerForActivityResult(
+        new ActivityResultContracts.RequestPermission(),
+        isGranted -> {
+          if (!isGranted) {
+            Toast.makeText(this, "Notification permission denied. Reminders may not show notifications.", Toast.LENGTH_LONG).show();
+          }
+        });
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
         != PackageManager.PERMISSION_GRANTED) {
       requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
