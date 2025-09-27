@@ -1,11 +1,11 @@
-# My Reminder App
+# Notiva
 
 ## TODO (high priority)
 
+* Check recurrence implementation.
 * Add logic to show multiple different notifications instead of overwriting the previous one.
 * Add logic to show the next alarm time in the notification.
 * Add logic to show the next alarm time in the app bar.
-* Check recurrence implementation.
 * Text box to show the next set of upcoming alarms.
 * Add notifications for upcoming alarms.
 * Add various preferences.

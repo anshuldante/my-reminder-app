@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Reminder App</string>
+    <string name="app_name">Notiva</string>
 
     <array name="recurrence_type_array">
         <item>Never</item>
@@ -13,7 +13,7 @@
 
     <!--  Strings for the Main Activity  -->
 
-    <string name="main_activity_title">My Reminders</string>
+    <string name="main_activity_title">Reminders</string>
     <string name="am_fab_add_reminder">Add Reminder</string>
     <string name="am_button_delete_all">Delete All Reminders</string>
     <string name="am_tv_no_reminders">No Reminders found\nClick + to add a reminder</string>

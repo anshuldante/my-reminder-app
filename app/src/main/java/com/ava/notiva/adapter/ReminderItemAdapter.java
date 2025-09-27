@@ -14,7 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ava.notiva.R;
 import com.ava.notiva.data.ReminderDmlViewModel;
+import com.ava.notiva.model.RecurrenceType;
 import com.ava.notiva.model.ReminderModel;
+import com.ava.notiva.util.DateTimeDisplayUtil;
+import com.ava.notiva.util.RecurrenceDisplayUtil;
 
 import java.util.Calendar;
 
@@ -45,73 +48,52 @@ public class ReminderItemAdapter
   @Override
   public void onBindViewHolder(@NonNull ReminderItemViewHolder holder, int position) {
     ReminderModel reminder = getItem(position);
-
     holder.reminder = reminder;
 
-    holder.reminderName.setText(reminder.getName());
+    String name = reminder.getName();
+    if (name == null || name.trim().isEmpty()) {
+      holder.alarmName.setVisibility(View.GONE);
+    } else {
+      holder.alarmName.setVisibility(View.VISIBLE);
+      holder.alarmName.setText(name);
+    }
 
-    Calendar startDateTime = reminder.getStartDateTime();
+    Calendar nextOccurrence = reminder.getStartDateTime();
+    String nextOccurrenceStr = DateTimeDisplayUtil.getFriendlyDateTimeSingleLine(context, nextOccurrence);
+    holder.nextOccurrence.setText(nextOccurrenceStr);
 
-    holder.reminderTime.setText(
-        context.getString(
-            R.string.ria_reminder_time,
-            startDateTime.get(Calendar.HOUR_OF_DAY),
-            startDateTime.get(Calendar.MINUTE)));
+    String number = String.valueOf(reminder.getRecurrenceDelay());
+    RecurrenceType type = reminder.getRecurrenceType();
+    boolean recurrenceEnabled = reminder.getRecurrenceDelay() > 0;
+    String endDate = DateTimeDisplayUtil.getFriendlyDate(context, reminder.getEndDateTime());
+    String endTime = DateTimeDisplayUtil.getFriendlyTime(reminder.getEndDateTime());
 
-    holder.reminderDate.setText(
-        context.getString(
-            R.string.ria_reminder_date,
-            startDateTime.get(Calendar.DATE),
-            startDateTime.get(Calendar.MONTH) + 1,
-            startDateTime.get(Calendar.YEAR)));
+    String summary = RecurrenceDisplayUtil.getRecurrenceSummary(
+        context,
+        number,
+        type,
+        endDate,
+        endTime
+    );
+    holder.summary.setText(summary);
 
     holder.activeSwitch.setChecked(reminder.isActive());
-
-    // TODO: replace the hardcoded values.
-    holder.nextOccurrenceDelay.setText(
-        context.getString(R.string.ria_occurrence_delay, 1, "hours", 3, "minutes"));
-
-    if (reminder.getRecurrenceType() != null) {
-      Calendar endDateTime = reminder.getEndDateTime();
-      holder.recurrenceDetails.setText(
-          context.getString(
-              R.string.ria_recurrence_details,
-              reminder.getRecurrenceDelay(),
-              reminder.getRecurrenceType()));
-      holder.endDateTime.setText(
-          context.getString(
-              R.string.ria_end_date_time,
-              endDateTime.get(Calendar.HOUR_OF_DAY),
-              endDateTime.get(Calendar.MINUTE),
-              endDateTime.get(Calendar.DATE),
-              endDateTime.get(Calendar.MONTH) + 1,
-              endDateTime.get(Calendar.YEAR)));
-    } else {
-      holder.recurrenceDetails.setVisibility(View.GONE);
-      holder.endDateTime.setVisibility(View.GONE);
-    }
   }
 
   public class ReminderItemViewHolder extends RecyclerView.ViewHolder {
 
-    private final TextView reminderName;
-    private final TextView reminderTime;
-    private final TextView recurrenceDetails;
+    private final TextView alarmName;
+    private final TextView nextOccurrence;
+    private final TextView summary;
     private final SwitchCompat activeSwitch;
-    private final TextView reminderDate;
-    private final TextView nextOccurrenceDelay;
-    private final TextView endDateTime;
 
     private ReminderModel reminder;
 
     public ReminderItemViewHolder(View itemView) {
       super(itemView);
-      reminderName = itemView.findViewById(R.id.rir_tv_reminderName);
-      reminderTime = itemView.findViewById(R.id.rir_tv_reminder_time);
-      recurrenceDetails = itemView.findViewById(R.id.rir_tv_reminder_recurrence_details);
-      reminderDate = itemView.findViewById(R.id.rir_tv_reminder_date);
-      nextOccurrenceDelay = itemView.findViewById(R.id.rir_tv_next_occurrence_delay);
-      endDateTime = itemView.findViewById(R.id.rir_tv_end_date_time);
+      alarmName = itemView.findViewById(R.id.rir_tv_alarm_name);
+      nextOccurrence = itemView.findViewById(R.id.rir_tv_next_occurrence);
+      summary = itemView.findViewById(R.id.rir_tv_summary);
       activeSwitch = itemView.findViewById(R.id.rir_sw_active);
 
       activeSwitch.setOnCheckedChangeListener(this::toggleReminderStatus);
@@ -126,7 +108,7 @@ public class ReminderItemAdapter
     }
 
     private void toggleReminderStatus(CompoundButton buttonView, boolean isChecked) {
-      if (isChecked != reminder.isActive()) {
+      if (reminder != null && isChecked != reminder.isActive()) {
         dmlViewModel.updateReminderStatus(reminder, isChecked);
       }
     }

@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Theme.MyReminderApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Notiva" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/blue_200</item>
         <item name="colorPrimaryVariant">@color/blue_700</item>
         <item name="colorOnPrimary">@color/black</item>

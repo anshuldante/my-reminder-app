@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace "com.ava.myreminderapp"
+    namespace "com.ava.notiva"
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.ava.myreminderapp"
+        applicationId "com.ava.notiva"
         buildToolsVersion "33.0.0"
         minSdkVersion 33
         targetSdkVersion 33

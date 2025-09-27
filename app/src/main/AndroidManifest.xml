@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ava.myreminderapp">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -10,21 +9,21 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name=".ReminderApplication"
+        android:name="com.ava.notiva.ReminderApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyReminderApp">
+        android:theme="@style/Theme.Notiva">
         <activity
-            android:name=".UpsertReminderActivity"
-            android:parentActivityName=".MainActivity">
+            android:name="com.ava.notiva.UpsertReminderActivity"
+            android:parentActivityName="com.ava.notiva.MainActivity">
             <meta-data
                 android:name="androidx.core.app.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.ava.notiva.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,11 +33,11 @@
         </activity>
 
         <service
-            android:name=".service.NotificationStopperService"
+            android:name="com.ava.notiva.service.NotificationStopperService"
             android:enabled="true" />
 
         <service
-            android:name=".service.NotificationStarterService"
+            android:name="com.ava.notiva.service.NotificationStarterService"
             android:enabled="true" />
     </application>
 
