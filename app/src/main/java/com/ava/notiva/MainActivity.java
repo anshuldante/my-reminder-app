@@ -76,7 +76,9 @@ public class MainActivity extends AppCompatActivity {
       intent.putExtra(REMINDER_START_TIME, model.getStartDateTime().getTimeInMillis());
       intent.putExtra(REMINDER_RECURRENCE_DELAY, model.getRecurrenceDelay());
       intent.putExtra(REMINDER_RECURRENCE_TYPE, model.getRecurrenceType().toString());
-      intent.putExtra(REMINDER_END_TIME, model.getEndDateTime().getTimeInMillis());
+      if (model.getEndDateTime() != null) {
+        intent.putExtra(REMINDER_END_TIME, model.getEndDateTime().getTimeInMillis());
+      }
     }
     startActivity(intent);
   }

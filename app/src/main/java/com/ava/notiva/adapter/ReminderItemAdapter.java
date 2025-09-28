@@ -62,23 +62,31 @@ public class ReminderItemAdapter
     String nextOccurrenceStr = DateTimeDisplayUtil.getFriendlyDateTimeSingleLine(context, nextOccurrence);
     holder.nextOccurrence.setText(nextOccurrenceStr);
 
-    String number = String.valueOf(reminder.getRecurrenceDelay());
-    RecurrenceType type = reminder.getRecurrenceType();
-    boolean recurrenceEnabled = reminder.getRecurrenceDelay() > 0;
-    String endDate = DateTimeDisplayUtil.getFriendlyDate(context, reminder.getEndDateTime());
-    String endTime = DateTimeDisplayUtil.getFriendlyTime(reminder.getEndDateTime());
+    boolean recurrenceEnabled = reminder.getRecurrenceDelay() > 0
+        && reminder.getRecurrenceType() != RecurrenceType.NEVER;
 
-    String summary = RecurrenceDisplayUtil.getRecurrenceSummary(
-        context,
-        number,
-        type,
-        endDate,
-        endTime
-    );
-    holder.summary.setText(summary);
+    if (recurrenceEnabled) {
+      String number = String.valueOf(reminder.getRecurrenceDelay());
+      RecurrenceType type = reminder.getRecurrenceType();
+      String endDate = reminder.getEndDateTime() != null ? DateTimeDisplayUtil.getFriendlyDate(context, reminder.getEndDateTime()) : "";
+      String endTime = reminder.getEndDateTime() != null ? DateTimeDisplayUtil.getFriendlyTime(reminder.getEndDateTime()) : "";
+
+      String summary = RecurrenceDisplayUtil.getRecurrenceSummary(
+          context,
+          number,
+          type,
+          endDate,
+          endTime
+      );
+      holder.summary.setVisibility(View.VISIBLE);
+      holder.summary.setText(summary);
+    } else {
+      holder.summary.setVisibility(View.GONE);
+    }
 
     holder.activeSwitch.setChecked(reminder.isActive());
   }
+
 
   public class ReminderItemViewHolder extends RecyclerView.ViewHolder {
 

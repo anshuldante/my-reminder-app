@@ -210,16 +210,6 @@
                     app:layout_constraintBaseline_toBaselineOf="@id/ara_tv_every"
                     app:layout_constraintStart_toEndOf="@id/ara_et_recurrence_number" />
 
-                <!-- Infinite recurrence checkbox -->
-                <CheckBox
-                    android:id="@+id/ara_cb_forever_recurrence"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/ara_infinite_recurrence"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ara_tv_every" />
-
                 <!-- End date row: display + picker -->
                 <TextView
                     android:id="@+id/ara_tv_end_date"
@@ -232,7 +222,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/ara_iv_end_calendar"
                     app:layout_constraintEnd_toStartOf="@id/ara_iv_end_calendar"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ara_cb_forever_recurrence" />
+                    app:layout_constraintTop_toBottomOf="@id/ara_sn_recurrence_type" />
 
                 <ImageView
                     android:id="@+id/ara_iv_end_calendar"
@@ -244,8 +234,8 @@
                     android:padding="16dp"
                     android:src="@drawable/ic_calendar"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ara_cb_forever_recurrence"
-                    app:tint="#F5F5F5" />
+                    app:layout_constraintTop_toBottomOf="@id/ara_sn_recurrence_type"
+                    app:tint="@android:color/black" />
 
                 <!-- End time row: display + picker -->
                 <TextView
@@ -272,7 +262,7 @@
                     android:src="@drawable/ic_clock"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ara_iv_end_calendar"
-                    app:tint="#F5F5F5" />
+                    app:tint="@android:color/black" />
 
                 <!-- Recurrence summary below -->
                 <TextView

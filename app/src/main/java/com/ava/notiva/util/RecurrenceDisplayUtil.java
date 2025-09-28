@@ -6,6 +6,18 @@ import com.ava.notiva.R;
 import com.ava.notiva.model.RecurrenceType;
 
 public class RecurrenceDisplayUtil {
+  private static String getPluralizedType(RecurrenceType type, int count) {
+    if (type == null) return "";
+    return switch (type) {
+      case YEAR -> count == 1 ? "year" : "years";
+      case MONTH -> count == 1 ? "month" : "months";
+      case DAY -> count == 1 ? "day" : "days";
+      case HOUR -> count == 1 ? "hour" : "hours";
+      case MINUTE -> count == 1 ? "minute" : "minutes";
+      default -> "";
+    };
+  }
+
   public static String getRecurrenceSummary(
       Context context,
       String number,
@@ -25,9 +37,14 @@ public class RecurrenceDisplayUtil {
     if (type == RecurrenceType.FOREVER) {
       summary.append(" forever");
     } else {
-      summary.append("Every ").append(number).append(" ").append(type.toString().toLowerCase());
-      boolean hasEndDate = endDate != null && !endDate.isEmpty() && !endDate.equals(context.getString(R.string.ara_date_default));
-      boolean hasEndTime = endTime != null && !endTime.isEmpty() && !endTime.equals(context.getString(R.string.ara_time_default));
+      int count = 1;
+      try {
+        count = Integer.parseInt(number.trim());
+      } catch (Exception ignored) {
+      }
+      summary.append("Every ").append(number).append(" ").append(getPluralizedType(type, count));
+      boolean hasEndDate = endDate != null && !endDate.trim().isEmpty() && !endDate.equals(context.getString(R.string.ara_date_default));
+      boolean hasEndTime = endTime != null && !endTime.trim().isEmpty() && !endTime.equals(context.getString(R.string.ara_time_default));
       if (hasEndDate || hasEndTime) {
         summary.append(" till ");
         if (hasEndTime) {
@@ -39,6 +56,6 @@ public class RecurrenceDisplayUtil {
         }
       }
     }
-    return summary.toString();
+    return summary.toString().trim();
   }
 }

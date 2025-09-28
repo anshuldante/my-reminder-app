@@ -38,4 +38,15 @@ public enum RecurrenceType {
   public String getValue() {
     return value;
   }
+
+  public long getMillis() {
+    return switch (this) {
+      case MINUTE -> 60_000L;
+      case HOUR -> 3_600_000L;
+      case DAY -> 86_400_000L;
+      case MONTH -> 2_678_400_000L; // 31 days
+      case YEAR -> 31_622_400_000L; // 366 days
+      default -> 0L;
+    };
+  }
 }
