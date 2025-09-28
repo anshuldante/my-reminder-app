@@ -129,24 +129,16 @@ public class ReminderModel {
   @Override
   public String toString() {
     return "ReminderDetails{"
-        + "id='"
-        + id
-        + '\''
-        + ", active="
-        + active
-        + ", name='"
-        + name
-        + '\''
-        + ", startDateTime="
-        + startDateTime.getTime()
-        + ", recurrenceDelay="
-        + recurrenceDelay
-        + ", recurrenceType="
-        + recurrenceType
-        + ", endDateTime="
-        + endDateTime.getTime()
+        + "id='" + id + '\''
+        + ", active=" + active
+        + ", name='" + name + '\''
+        + ", startDateTime=" + (startDateTime != null ? startDateTime.getTime() : "null")
+        + ", recurrenceDelay=" + recurrenceDelay
+        + ", recurrenceType=" + recurrenceType
+        + ", endDateTime=" + (endDateTime != null ? endDateTime.getTime() : "null")
         + '}';
   }
+
 
   @Override
   public boolean equals(Object o) {

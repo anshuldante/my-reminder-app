@@ -2,13 +2,12 @@
     <string name="app_name">Notiva</string>
 
     <array name="recurrence_type_array">
-        <item>Never</item>
+        <item>Forever</item>
         <item>Minute(s)</item>
         <item>Hour(s)</item>
         <item>Day(s)</item>
-        <item>Months(s)</item>
+        <item>Month(s)</item>
         <item>Year(s)</item>
-        <item>Forever</item>
     </array>
 
     <!--  Strings for the Main Activity  -->
@@ -81,5 +80,7 @@
     <string name="display_tomorrow_prefix">Tomorrow-</string>
     <string name="display_today_singleline">Today, %1$s</string>
     <string name="display_tomorrow_singleline">Tomorrow, %1$s</string>
+    <string name="no_end_time">No end time</string>
+    <string name="no_end_date">No end date</string>
 
 </resources>
