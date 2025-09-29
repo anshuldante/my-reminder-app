@@ -28,6 +28,7 @@ import android.os.Vibrator;
 import android.os.VibratorManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -85,7 +86,6 @@ public class NotificationStarterService extends Service {
       });
     }
     mediaPlayer.start();
-//    attachAlarmAutoStopper();
     vibrateWithPattern();
     return START_STICKY;
   }
@@ -143,15 +143,33 @@ public class NotificationStarterService extends Service {
   }
 
   private NotificationCompat.Builder createNotification() {
+    StringBuilder contentTextBuilder = getReminderText();
     return new NotificationCompat.Builder(this, CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_alarm)
-        .setContentText("Ring Ring...Ring Ring")
+        .setContentText(contentTextBuilder.toString())
         .setContentTitle(notificationName)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setCategory(NotificationCompat.CATEGORY_ALARM)
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         .setTicker(getText(R.string.ticker_text))
         .setAutoCancel(true);
+  }
+
+  @NonNull
+  private StringBuilder getReminderText() {
+    StringBuilder contentTextBuilder = new StringBuilder();
+    contentTextBuilder.append("Ring Ring...Ring Ring");
+    if (notificationId != -1) {
+      contentTextBuilder.append(" | ID: ").append(notificationId);
+    } else {
+      Log.i(TAG, "Reminder ID was -1");
+    }
+    if (notificationName != null && !notificationName.trim().isEmpty()) {
+      contentTextBuilder.append(" | Name: ").append(notificationName);
+    } else {
+      Log.i(TAG, "Reminder name was null or empty");
+    }
+    return contentTextBuilder;
   }
 
   private void createNotificationChannel() {

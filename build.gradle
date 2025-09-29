@@ -5,13 +5,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2'
-        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.41'
+        classpath 'com.android.tools.build:gradle:8.12.3'
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.57.2'
     }
 }
 
 allprojects {
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
         options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     }
 
@@ -21,6 +21,6 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
 }

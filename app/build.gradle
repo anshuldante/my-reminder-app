@@ -5,13 +5,13 @@ plugins {
 
 android {
     namespace "com.ava.notiva"
-    compileSdk 33
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.ava.notiva"
-        buildToolsVersion "33.0.0"
+        buildToolsVersion "36.0.0"
         minSdkVersion 33
-        targetSdkVersion 33
+        targetSdkVersion 36
         versionCode 1
         versionName "1.0"
 
@@ -28,27 +28,36 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+    lint {
+        disable 'RemoveWorkManagerInitializer'
+    }
 }
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.work:work-runtime:2.10.5'
+    implementation 'androidx.hilt:hilt-common:1.3.0'
+    implementation 'androidx.hilt:hilt-work:1.3.0'
+    annotationProcessor 'androidx.hilt:hilt-compiler:1.3.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 
-    implementation 'com.google.dagger:hilt-android:2.41'
-    annotationProcessor 'com.google.dagger:hilt-compiler:2.41'
+    implementation 'com.google.dagger:hilt-android:2.57.2'
+    annotationProcessor 'com.google.dagger:hilt-compiler:2.57.2'
 
-    def room_version = "2.4.3"
+    def room_version = "2.8.1"
     // Room Core
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
     // Rxjava support
     implementation "androidx.room:room-rxjava2:$room_version"
+
+    implementation 'androidx.activity:activity:1.11.0'
 }
 
 java {

@@ -6,6 +6,8 @@ import android.widget.CompoundButton;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+
+// TODO: Use this instead of the logic in UpsertReminderActivity
 public class RecurrenceSwitchListener implements SwitchCompat.OnCheckedChangeListener {
   private final ConstraintLayout recurrenceDetailsCl;
   private final Runnable resetRecurrenceDelayView;

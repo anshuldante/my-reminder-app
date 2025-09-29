@@ -125,6 +125,31 @@ public class ReminderModel {
     this.endDateTime = endDateTime;
   }
 
+  public Calendar getNextOccurrenceAfter(Calendar now) {
+    if (startDateTime == null) {
+      return null;
+    }
+    if (recurrenceType == RecurrenceType.NEVER || recurrenceDelay <= 0) {
+      return startDateTime.after(now) ? (Calendar) startDateTime.clone() : null;
+    }
+    long startMillis = startDateTime.getTimeInMillis();
+    long nowMillis = now.getTimeInMillis();
+    long interval = recurrenceType.getMillis() * recurrenceDelay;
+    Calendar next = (Calendar) startDateTime.clone();
+    Calendar end = recurrenceType == RecurrenceType.FOREVER ? null : endDateTime;
+    if (startMillis > nowMillis) {
+      next.setTimeInMillis(startMillis);
+    } else {
+      long intervalsPassed = (nowMillis - startMillis) / interval;
+      long nextMillis = startMillis + (intervalsPassed + 1) * interval;
+      next.setTimeInMillis(nextMillis);
+    }
+    if (end != null && next.after(end)) {
+      return null;
+    }
+    return next;
+  }
+
   @NonNull
   @Override
   public String toString() {
