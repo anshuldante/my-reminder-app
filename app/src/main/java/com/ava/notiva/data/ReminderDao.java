@@ -32,6 +32,9 @@ public interface ReminderDao {
   @Query("SELECT * FROM reminders order by name")
   LiveData<List<ReminderModel>> getAll();
 
+  @Query("SELECT * FROM reminders order by name")
+  List<ReminderModel> getAllSync();
+
   @Query("SELECT * FROM reminders where id = :id")
   LiveData<ReminderModel> get(int id);
 }

@@ -13,11 +13,10 @@ import java.util.function.Consumer;
 
 public class ReminderRepository {
 
+  private static final String TAG = "Notiva.ReminderRepository: ";
   private final ReminderDao reminderDao;
   private final ExecutorService reminderDaoExecutor;
   private final LiveData<List<ReminderModel>> getAllObservable;
-
-  private static final String TAG = "Notiva.ReminderRepository: ";
 
   public ReminderRepository(ReminderDao reminderDao, ExecutorService reminderDaoExecutor) {
     this.reminderDao = reminderDao;
@@ -95,5 +94,9 @@ public class ReminderRepository {
 
   public LiveData<List<ReminderModel>> getAll() {
     return getAllObservable;
+  }
+
+  public List<ReminderModel> getAllSync() {
+    return reminderDao.getAllSync();
   }
 }

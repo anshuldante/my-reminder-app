@@ -1,6 +1,5 @@
 package com.ava.notiva;
 
-import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static com.ava.notiva.util.ReminderConstants.REMINDER_ACTIVE;
 import static com.ava.notiva.util.ReminderConstants.REMINDER_END_TIME;
 import static com.ava.notiva.util.ReminderConstants.REMINDER_ID;
@@ -17,8 +16,6 @@ import static java.util.Calendar.MONTH;
 import static java.util.Calendar.SECOND;
 import static java.util.Calendar.YEAR;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,17 +40,16 @@ import com.ava.notiva.listener.RecurrenceTypeListener;
 import com.ava.notiva.listener.ReminderNameChangedListener;
 import com.ava.notiva.model.RecurrenceType;
 import com.ava.notiva.model.ReminderModel;
-import com.ava.notiva.service.NotificationStarterService;
 import com.ava.notiva.util.DateTimeDisplayUtil;
 import com.ava.notiva.util.FriendlyDateType;
 import com.ava.notiva.util.InputFilterMinMax;
 import com.ava.notiva.util.RecurrenceDisplayUtil;
+import com.ava.notiva.util.ReminderWorkerUtils;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -67,8 +63,6 @@ public class UpsertReminderActivity extends AppCompatActivity {
   private final Calendar currentTime = Calendar.getInstance();
 
   @Inject ReminderDmlViewModel reminderDmlViewModel;
-
-  private AlarmManager alarmMgr;
 
   private ArrayAdapter<CharSequence> spinnerAdapter;
   private ConstraintLayout recurrenceDetailsCl;
@@ -89,7 +83,6 @@ public class UpsertReminderActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_upsert_reminder);
     try {
-      alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
       reminderModel = buildReminderAndSetTitle();
       initComponentMappings();
       initPrimaryComponents();
@@ -135,15 +128,15 @@ public class UpsertReminderActivity extends AppCompatActivity {
     }
 
     if (reminderModel.getId() > 0) {
-      triggerNotification();
       reminderDmlViewModel.updateReminder(reminderModel);
+      ReminderWorkerUtils.enqueueReminderWorker(this);
       finish();
     } else {
       reminderDmlViewModel.addReminderWithCallback(reminderModel, (newId) -> {
         if (newId > 0) {
           reminderModel.setId(newId.intValue());
           runOnUiThread(() -> {
-            triggerNotification();
+            ReminderWorkerUtils.enqueueReminderWorker(this);
             finish();
           });
         } else {
@@ -151,30 +144,6 @@ public class UpsertReminderActivity extends AppCompatActivity {
           runOnUiThread(this::finish);
         }
       });
-    }
-  }
-
-  private void triggerNotification() {
-    try {
-      Intent alarmIntent = new Intent(this, NotificationStarterService.class);
-      alarmIntent.putExtra(REMINDER_ID, reminderModel.getId());
-      alarmIntent.putExtra(REMINDER_NAME, reminderModel.getName());
-
-      PendingIntent pendingIntent = PendingIntent.getService(
-          this, reminderModel.getId(), alarmIntent, FLAG_IMMUTABLE);
-
-      Log.i(TAG, "Creating Reminder Notification Service Intent");
-      Log.i(TAG, "Current Time: " + new Date());
-      Log.i(TAG, "Alarm Time: " + reminderModel.getStartDateTime().getTime());
-
-      alarmMgr.setExactAndAllowWhileIdle(
-          AlarmManager.RTC_WAKEUP,
-          reminderModel.getStartDateTime().getTimeInMillis(),
-          pendingIntent
-      );
-    } catch (Exception e) {
-      Log.e(TAG, "Failed to schedule notification", e);
-      Toast.makeText(this, "Failed to schedule notification", Toast.LENGTH_SHORT).show();
     }
   }
 
@@ -557,7 +526,6 @@ public class UpsertReminderActivity extends AppCompatActivity {
     endTimeTextView.setText(DateTimeDisplayUtil.getFriendlyTime(dateTime));
     updateRecurrenceSummary();
   }
-
 
   private void updateRecurrenceSummary() {
     String number = recurrenceDelayEt.getText() == null ? "" : recurrenceDelayEt.getText().toString().trim();

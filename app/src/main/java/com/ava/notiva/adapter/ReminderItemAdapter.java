@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -88,11 +89,11 @@ public class ReminderItemAdapter
 
     if (isReminderDisabledOrExpired(reminder)) {
       holder.itemView.setAlpha(0.5f);
-      holder.alarmName.setTextColor(context.getResources().getColor(R.color.gray));
+      holder.alarmName.setTextColor(ContextCompat.getColor(context, R.color.gray));
       holder.alarmName.setPaintFlags(holder.alarmName.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
     } else {
       holder.itemView.setAlpha(1.0f);
-      holder.alarmName.setTextColor(context.getResources().getColor(R.color.primary_text));
+      holder.alarmName.setTextColor(ContextCompat.getColor(context, R.color.primary_text));
       holder.alarmName.setPaintFlags(holder.alarmName.getPaintFlags() & (~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG));
     }
   }
@@ -101,6 +102,14 @@ public class ReminderItemAdapter
     boolean isDisabled = !reminder.isActive();
     boolean isExpired = reminder.getEndDateTime() != null && reminder.getEndDateTime().before(Calendar.getInstance());
     return isDisabled || isExpired;
+  }
+
+  public ReminderModel getReminderAt(int position) {
+    return getItem(position);
+  }
+
+  public interface ReminderItemClickListener {
+    void onItemClick(ReminderModel reminderAt);
   }
 
   public class ReminderItemViewHolder extends RecyclerView.ViewHolder {
@@ -124,7 +133,7 @@ public class ReminderItemAdapter
     }
 
     private void openReminderEditor(View view) {
-      int position = getAdapterPosition();
+      int position = getBindingAdapterPosition();
       if (itemClickListener != null && position != RecyclerView.NO_POSITION) {
         itemClickListener.onItemClick(getReminderAt(position));
       }
@@ -135,13 +144,5 @@ public class ReminderItemAdapter
         dmlViewModel.updateReminderStatus(reminder, isChecked);
       }
     }
-  }
-
-  public ReminderModel getReminderAt(int position) {
-    return getItem(position);
-  }
-
-  public interface ReminderItemClickListener {
-    void onItemClick(ReminderModel reminderAt);
   }
 }

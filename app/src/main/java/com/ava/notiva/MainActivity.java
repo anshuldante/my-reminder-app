@@ -37,16 +37,14 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
+  public static final String TAG = "Notiva.MainActivity";
   @Inject
   ReminderDmlViewModel reminderDml;
   @Inject
-  GetAllRemindersViewModel getAllReminders;
-
+  GetAllRemindersViewModel getAllRemindersViewModel;
   private ReminderItemAdapter reminderItemAdapter;
   private RecyclerView reminderRecyclerView;
   private TextView emptyReminderList;
-
-  public static final String TAG = "Notiva.MainActivity";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
           @Override
           public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             try {
-              ReminderModel reminder = reminderItemAdapter.getReminderAt(viewHolder.getAdapterPosition());
+              ReminderModel reminder = reminderItemAdapter.getReminderAt(viewHolder.getBindingAdapterPosition());
               if (reminder != null) {
                 Log.i(TAG, "Deleting reminder: ID=" + reminder.getId() + ", Name=" + reminder.getName());
                 reminderDml.deleteReminder(reminder);
@@ -113,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void observeAllReminders() {
-    getAllReminders
+    getAllRemindersViewModel
         .getAllReminders()
         .observe(
             this,
