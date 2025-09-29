@@ -85,8 +85,23 @@ public class ReminderItemAdapter
     }
 
     holder.activeSwitch.setChecked(reminder.isActive());
+
+    if (isReminderDisabledOrExpired(reminder)) {
+      holder.itemView.setAlpha(0.5f);
+      holder.alarmName.setTextColor(context.getResources().getColor(R.color.gray));
+      holder.alarmName.setPaintFlags(holder.alarmName.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
+    } else {
+      holder.itemView.setAlpha(1.0f);
+      holder.alarmName.setTextColor(context.getResources().getColor(R.color.primary_text));
+      holder.alarmName.setPaintFlags(holder.alarmName.getPaintFlags() & (~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG));
+    }
   }
 
+  private boolean isReminderDisabledOrExpired(ReminderModel reminder) {
+    boolean isDisabled = !reminder.isActive();
+    boolean isExpired = reminder.getEndDateTime() != null && reminder.getEndDateTime().before(Calendar.getInstance());
+    return isDisabled || isExpired;
+  }
 
   public class ReminderItemViewHolder extends RecyclerView.ViewHolder {
 
